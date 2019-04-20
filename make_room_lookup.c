@@ -1,6 +1,5 @@
 #include <glib.h>
 #include <glib/gstdio.h>
-// #include <fcntl.h>
 
 // a room and its location.
 typedef struct {
@@ -13,7 +12,7 @@ typedef struct {
 // creates a Room.
 Room* make_room(gchar* room_num, gint level, gint x, gint y) {
   Room* room = malloc(sizeof(Room));
-  room->room_num = room_num;
+  room->room_num = strndup(room_num, 6);
   room->level = level;
   room->x = x;
   room->y = y;
@@ -22,7 +21,15 @@ Room* make_room(gchar* room_num, gint level, gint x, gint y) {
 
 // frees a Room.
 void free_room(void* room) {
-  free((Room*)room);
+  Room * r = (Room*) room;
+  free(r->room_num);
+  free(room);
+}
+
+void print_room(gpointer key, gpointer value, void* data) {
+  gchar* MAC = (gchar*) key;
+  Room* room = (Room*) value;
+  printf("%s ==> %s\n", MAC, room->room_num);
 }
 
 int main(int argc, char* argv[]) {
@@ -49,21 +56,24 @@ int main(int argc, char* argv[]) {
   // split the text into lines
   lines = g_strsplit(text, split, 0);
   int i = 0;
-  char* room_num;
-  int level;
-  int x = 0;
-  int y = 0;
+  gchar* room_num;
+  gint level;
+  gint x = 0;
+  gint y = 0;
   Room* room;
   while (lines[i] != NULL) {
-    if (lines[i][0] == 'W') {
+    if (lines[i][0] == 'W') { // Quick and dirty for WH rooms
       room_num = lines[i];
-      level = atoi(lines[i][3]);
+      level = atoi(&(lines[i][3])) / 100;
       room = make_room(room_num, level, x, y);
-      g_hash_table_insert(room_lookup, lines[i+1], room);
-      g_hash_table_insert(room_lookup, lines[i+2], room);
+      char* MAC1 = strndup(lines[i+1], 17);
+      char* MAC2 = strndup(lines[i+2], 17);
+      g_hash_table_insert(room_lookup, MAC1, room);
+      g_hash_table_insert(room_lookup, MAC2, room);
       i += 3;
     } else { i++; }
   }
+  g_hash_table_foreach(room_lookup, print_room, NULL);
   g_strfreev (lines);
   return 0;
 }
