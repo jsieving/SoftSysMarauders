@@ -29,7 +29,7 @@ void free_room(void* room) {
 void print_room(gpointer key, gpointer value, void* data) {
   gchar* MAC = (gchar*) key;
   Room* room = (Room*) value;
-  printf("%s ==> %s\n", MAC, room->room_num);
+  printf("%s ==> %s, level %d, (%d, %d)\n", MAC, room->room_num, room->level, room->x, room->y);
 }
 
 int main(int argc, char* argv[]) {
@@ -65,12 +65,14 @@ int main(int argc, char* argv[]) {
     if (lines[i][0] == 'W') { // Quick and dirty for WH rooms
       room_num = lines[i];
       level = atoi(&(lines[i][3])) / 100;
+      // x = atoi(&(lines[i+3][3])) // below MACs: 'x: 000'
+      // y = atoi(&(lines[i+4][3])) // below MACs: 'y: 000'
       room = make_room(room_num, level, x, y);
       char* MAC1 = strndup(lines[i+1], 16);
       char* MAC2 = strndup(lines[i+2], 16);
       g_hash_table_insert(room_lookup, MAC1, room);
       g_hash_table_insert(room_lookup, MAC2, room);
-      i += 3;
+      i += 3; // 5
     } else { i++; }
   }
   g_hash_table_foreach(room_lookup, print_room, NULL);
