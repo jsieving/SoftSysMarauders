@@ -66,8 +66,8 @@ int main(int argc, char* argv[]) {
       room_num = lines[i];
       level = atoi(&(lines[i][3])) / 100;
       room = make_room(room_num, level, x, y);
-      char* MAC1 = strndup(lines[i+1], 17);
-      char* MAC2 = strndup(lines[i+2], 17);
+      char* MAC1 = strndup(lines[i+1], 16);
+      char* MAC2 = strndup(lines[i+2], 16);
       g_hash_table_insert(room_lookup, MAC1, room);
       g_hash_table_insert(room_lookup, MAC2, room);
       i += 3;
