@@ -27,7 +27,7 @@ We also have a script that gathers the MAC addresses of the strongest wifi route
 
 Here is a picture of that script being run in West Hall, with different numbers of specified outputs:
 
-![image of screenshot](screenshot_macs.jpg)
+![image of screenshot](https://github.com/jsieving/SoftSysMarauders/blob/master/Screenshot%20from%202019-04-21%2018-59-26.png)
 
 <br>
 
