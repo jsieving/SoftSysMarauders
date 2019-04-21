@@ -40,13 +40,13 @@ Lastly, we are in the process of researching and sketching out how we might visu
 
 ## Next Steps
 
-Document our code more thoroughly. This is done when someone could look at our code, be able to run it, and understand what each function is doing. (Jane, Emma & Ashley)
-Finish the client-side location reporter & transport it to Ashley’s better-scaffolded server-client program. Done when the combined programs compile and produce the expected output. (Jane w/ help from friends)
-Get an image of the map of West Hall with the placements of routers, develop a coordinate system and add the coordinates of routers to each room mapping. Done when the text file of rooms and MAC addresses also has coordinates. (Emma has asked for the image.)
-Write a function which can triangulate between the coordinates of WiFi routers so the output of the room listing program can be converted to a physical location. Done when this function compiles and works. (Ashley)
-Choose a visualization library and get familiar with it. Done when team agrees on library, and tasks have been added to Trello for implementing the visualization. (Emma)
+- Document our code more thoroughly. This is done when someone could look at our code, be able to run it, and understand what each function is doing. (Jane, Emma & Ashley)
+- Finish the client-side location reporter & transport it to Ashley’s better-scaffolded server-client program. Done when the combined programs compile and produce the expected output. (Jane w/ help from friends)
+- Get an image of the map of West Hall with the placements of routers, develop a coordinate system and add the coordinates of routers to each room mapping. Done when the text file of rooms and MAC addresses also has coordinates. (Emma has asked for the image.)
+- Write a function which can triangulate between the coordinates of WiFi routers so the output of the room listing program can be converted to a physical location. Done when this function compiles and works. (Ashley)
+- Choose a visualization library and get familiar with it. Done when team agrees on library, and tasks have been added to Trello for implementing the visualization. (Emma)
 
 ## Resources Used
 
-[Here](https://docs.google.com/document/d/1idELToCDq5wX1h-5r3yL-W4tlr2yUxLwAVgkMUuoz4s/edit?usp=sharing) is a link to the list of resources we found for network connections and finding MAC addresses in the first phase of our project.
-[Here](https://docs.google.com/document/d/1Z-yXkrT_hlOyFl2hj6lLLfkZ74O_Ei0_TwBZ1cZhOnA/edit?usp=sharing) is a link to the list of resources we found for visualization research.
+- [Here](https://docs.google.com/document/d/1idELToCDq5wX1h-5r3yL-W4tlr2yUxLwAVgkMUuoz4s/edit?usp=sharing) is a link to the list of resources we found for network connections and finding MAC addresses in the first phase of our project.
+- [Here](https://docs.google.com/document/d/1Z-yXkrT_hlOyFl2hj6lLLfkZ74O_Ei0_TwBZ1cZhOnA/edit?usp=sharing) is a link to the list of resources we found for visualization research.
