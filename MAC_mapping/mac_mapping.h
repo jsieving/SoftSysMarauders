@@ -31,3 +31,5 @@ void print_room(Room* room);
 void print_room_entry(void* key, void* value, void* data);
 
 GHashTable* make_mapping(char* filename);
+
+int get_near_rooms(Room** room_array, int* strength_array, int max_rooms);

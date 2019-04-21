@@ -120,7 +120,7 @@ GHashTable* make_mapping(char* filename) {
   // read the file contents and check that this was successful
   gboolean res = g_file_get_contents(filename, &text, NULL, &error);
   if (res == 0) {
-    puts("Error in main: g_file_get_contents: failed to read file.");
+    puts("Error in make_mapping: g_file_get_contents: failed to read file.");
     exit(1);
   }
 
@@ -133,9 +133,9 @@ GHashTable* make_mapping(char* filename) {
   gint y = 0;
   Room* room;
   while (lines[i] != NULL) {
-    if (lines[i][0] == 'W') { // Quick and dirty for WH rooms
-      room_num = lines[i];
-      level = atoi(&(lines[i][3])) / 100;
+    if (lines[i][0] == '>') {
+      room_num = &(lines[i][1]);
+      level = atoi(&(lines[i][4])) / 100;
       // x = atoi(&(lines[i+3][3])) // below MACs: 'x: 000'
       // y = atoi(&(lines[i+4][3])) // below MACs: 'y: 000'
       room = make_room(room_num, level, x, y);
@@ -143,9 +143,40 @@ GHashTable* make_mapping(char* filename) {
       char* MAC2 = strndup(lines[i+2], 16);
       g_hash_table_insert(room_lookup, MAC1, room);
       g_hash_table_insert(room_lookup, MAC2, room);
-      i += 3; // 5
+      i += 3; // 5 if adding x, y lines
     } else { i++; }
   }
   g_strfreev (lines);
   return room_lookup;
+}
+
+int get_near_rooms(Room** room_array, int* strength_array, int max_rooms) {
+  int scan_length = 20;
+  char* mac_array[scan_length+1];
+  mac_array[scan_length] = "\0";
+  int s_array[scan_length+1];
+  s_array[scan_length] = 0;
+  get_macs_strength(mac_array, s_array, scan_length);
+
+  char* filename = "MAC_rooms.txt";
+  GHashTable* room_lookup = make_mapping(filename);
+  // g_hash_table_foreach(room_lookup, print_room_entry, NULL);
+
+  int i = 0;
+  int n = 0;
+  Room* room;
+  while (mac_array[i] != NULL && n < max_rooms && n <= i) {
+    room = (Room*) g_hash_table_lookup(room_lookup, (gchar*) mac_array[i]);
+    if (room == NULL) {
+      puts("Error in get_near_rooms: room lookup failed.");
+      printf("  Not a key: %s\n", mac_array[i]);
+    } else {
+      room_array[n] = room;
+      strength_array[n] = s_array[i];
+      n++;
+    }
+    i++;
+  }
+  room_array[n] = NULL;
+  return n;
 }
