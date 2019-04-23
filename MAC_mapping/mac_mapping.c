@@ -180,3 +180,41 @@ int get_near_rooms(Room** room_array, int* strength_array, int max_rooms) {
   room_array[n] = NULL;
   return n;
 }
+
+int create_message(char* buffer, int buf_len) {
+  int n = 0;
+  int end = 0;
+  int rooms;
+  int check_end = 0;
+  char check_buffer[buf_len]; // in place to make sure input buffer does not overflow
+
+  int max_rooms = 3;
+  Room* near_rooms[max_rooms+1];
+  near_rooms[max_rooms] = NULL;
+  int strength_array[max_rooms];
+
+  rooms = get_near_rooms(near_rooms, strength_array, max_rooms);
+  if (rooms < max_rooms) {
+    printf("Warning in create_message: %d locations returned by get_near_rooms, %d expected.\n", rooms, max_rooms);
+  }
+
+  while (n < rooms) {
+    // number of characters attempted to write, not including null terminator
+    // returns attempted number of chars, even if buffer was too small.
+    check_end = snprintf(check_buffer, buf_len, "%s:%d;", near_rooms[n]->room_num, strength_array[n]);
+    if (end + check_end < buf_len) { // number of characters will fit in buffer
+      snprintf(&(buffer[end]), check_end+1, "%s", check_buffer); // size arg in snprintf includes '\0'
+      end += check_end;
+      n++;
+    } else {
+      printf("Warning in create_message: %d bytes written out of %d attempted. Buffer length is %d.\n", end, end+check_end, buf_len);
+      break;
+    }
+  }
+
+  if (n < max_rooms) {
+    printf("Warning in create_message: %d locations written, %d expected.\n", n, max_rooms);
+  }
+
+  return end;
+}

@@ -4,47 +4,16 @@
 #include <arpa/inet.h> // htons, inet_pton, includes netinet/in -> sys/socket
 #include <string.h> // memset
 #include <errno.h> // strerror
-#include "mac_mapping.h" // get_near_rooms
+#include "mac_mapping.h" // create_message
 
 #define PORT 8888
 #define MAX_MSG 80
 
-void comm_loop(int sock_fd) {
-  int i = 0;
-  int place;
-  int valread = 0;
-  int rooms;
+void send_message(int sock_fd) {
   char out_buffer[MAX_MSG+1];
-  char in_buffer[MAX_MSG+1];
-
-  int max_rooms = 3;
-  Room* near_rooms[max_rooms+1];
-  near_rooms[max_rooms] = NULL;
-  int strength_array[max_rooms];
-
-  while(1) {
-    rooms = get_near_rooms(near_rooms, strength_array, max_rooms);
-    i = 0;
-    place = 0;
-    while (i < rooms && place < MAX_MSG) { // This is weak protection, since place increases quickly
-      place += sprintf(&(out_buffer[place]), "%s:%d;", near_rooms[i]->room_num, strength_array[i]);
-      i++;
-    }
-    i = 0;
-    out_buffer[MAX_MSG] = '\0';
-    send(sock_fd, out_buffer, MAX_MSG * sizeof(char), 0);
-    memset(out_buffer, MAX_MSG * sizeof(char), ' ');
-    puts("sent\n");
-
-    while ((valread = recv(sock_fd, in_buffer, MAX_MSG * sizeof(char), 0)) != 0) {
-      if (valread == -1) {
-        error("Error in client while receiving");
-      }
-      in_buffer[valread] = '\0';
-      printf("From Server : %s", in_buffer);
-      memset(in_buffer, MAX_MSG * sizeof(char), ' ');
-    }
-  }
+  create_message(out_buffer, MAX_MSG+1);
+  send(sock_fd, out_buffer, MAX_MSG * sizeof(char), 0);
+  puts("Message sent\n");
 }
 
 int main(int argc, char* argv[]) {
@@ -77,7 +46,7 @@ int main(int argc, char* argv[]) {
 
   puts("Connected!\n");
 
-  comm_loop(sock_fd);
+  send_message(sock_fd);
 
   close(sock_fd);
   return 0;
