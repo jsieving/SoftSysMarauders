@@ -1,15 +1,12 @@
-# Marauders' Map in C
-### Ashley Swanson, Jane Sieving, and Emma Pan
+# Marauder’s Map in C
+### Mid-Project Update
+## Ashley Swanson, Jane Sieving, Emma Pan (The Marauders)
 
-Project 2 for Software Systems Spring 2019 @ Olin College.
+---
 
-## The Goal
+## Project Goals
 
-The goal of this project is to create a Marauder’s Map application. The program will allow users to log into a network and track and report their whereabouts using proximity to wifi routers throughout Olin’s campus. As a minimum viable product, we hope to create an application which can report the location of a single user in a text-based format within the terminal. Our stretch goals include tracking multiple users at once and visualizing the output graphically. As discussed in depth below, we are very close to achieving our MVP, we are confident that we can make it work for multiple users, and we are now looking into visualizing the output.
-
-## Try it out
-
-Go to the folder `MAC_mapping` and follow the instructions to test out our program.
+The goal of this project is to create a Marauder’s Map application. The program would allow users to log into a network and track and report their whereabouts using proximity to wifi routers throughout Olin’s campus. As a minimum viable product, we hope to create an application which can report the location of a single user in a text-based format within the terminal. Our stretch goals include tracking multiple users at once and visualizing the output graphically. As discussed in depth below, we are very close to achieving our MVP, we are confident that we can make it work for multiple users, and we are now looking into visualizing the output.
 
 ## Learning Goals
 
@@ -48,3 +45,8 @@ Lastly, we are in the process of researching and sketching out how we might visu
 - Get an image of the map of West Hall with the placements of routers, develop a coordinate system and add the coordinates of routers to each room mapping. Done when the text file of rooms and MAC addresses also has coordinates. (Emma has asked for the image.)
 - Write a function which can triangulate between the coordinates of WiFi routers so the output of the room listing program can be converted to a physical location. Done when this function compiles and works. (Ashley)
 - Choose a visualization library and get familiar with it. Done when team agrees on library, and tasks have been added to Trello for implementing the visualization. (Emma)
+
+## Resources Used
+
+- [Here](https://docs.google.com/document/d/1idELToCDq5wX1h-5r3yL-W4tlr2yUxLwAVgkMUuoz4s/edit?usp=sharing) is a link to the list of resources we found for network connections and finding MAC addresses in the first phase of our project.
+- [Here](https://docs.google.com/document/d/1Z-yXkrT_hlOyFl2hj6lLLfkZ74O_Ei0_TwBZ1cZhOnA/edit?usp=sharing) is a link to the list of resources we found for visualization research.
