@@ -136,14 +136,14 @@ GHashTable* make_mapping(char* filename) {
     if (lines[i][0] == '>') {
       room_num = &(lines[i][1]);
       level = atoi(&(lines[i][4])) / 100;
-      // x = atoi(&(lines[i+3][3])) // below MACs: 'x: 000'
-      // y = atoi(&(lines[i+4][3])) // below MACs: 'y: 000'
+      x = atoi(&(lines[i+3][2])) // below MACs: 'x:000'
+      y = atoi(&(lines[i+4][2])) // below MACs: 'y:000'
       room = make_room(room_num, level, x, y);
       char* MAC1 = strndup(lines[i+1], 16);
       char* MAC2 = strndup(lines[i+2], 16);
       g_hash_table_insert(room_lookup, MAC1, room);
       g_hash_table_insert(room_lookup, MAC2, room);
-      i += 3; // 5 if adding x, y lines
+      i += 5; // if adding x, y lines
     } else { i++; }
   }
   g_strfreev (lines);
