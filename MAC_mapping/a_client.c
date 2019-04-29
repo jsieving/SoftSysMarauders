@@ -9,12 +9,14 @@
 #include <sys/types.h>
 #include <arpa/inet.h>
 #include <netdb.h>
+#include <signal.h>
 #include "mac_mapping.h"
 
-#define PORT 9000
+#define PORT 8080
 #define BUF_SIZE 1024
 
 int username_flag = 0; // 0: username not set
+int sock = 0; // used by sending (parent) thread
 
 void * receiveMessage(void * socket) {
  int sockfd, ret;
@@ -36,14 +38,35 @@ void * receiveMessage(void * socket) {
  }
 }
 
+/* Set up the signal catcher.
+*/
+int catch_signal(int sig, void (*handler)(int)) {
+    struct sigaction action;
+    action.sa_handler = handler;
+    sigemptyset(&action.sa_mask);
+    action.sa_flags = 0;
+    return sigaction(sig, &action, NULL);
+}
+
+/* Signal handler for SHUTDOWN
+*/
+void handle_shutdown(int sig) {
+    if (sock)
+        close(sock);
+    fprintf(stderr, "\nYour connection has been terminated.\n");
+    exit(EXIT_SUCCESS);
+}
+
 int main(int argc, char const *argv[])
 {
-    int sock = 0;
     struct sockaddr_in serv_addr;
     char username[BUF_SIZE];
     char buffer[BUF_SIZE] = {0};
     char * serverAddr;
     pthread_t rThread;
+
+    if (catch_signal(SIGINT, handle_shutdown) == -1) {
+        error("Signal catcher setup failed. Setting interrupt handler"); }
 
     if (argc <2) { //checks that user input server ip address
       printf("Missing server ip address");
@@ -84,33 +107,34 @@ int main(int argc, char const *argv[])
      exit(1);
     }
 
+    char message_buffer[BUF_SIZE] = {0};
+
     if(!username_flag){
-      printf("Hack3rCh@t v1.0\n");
+      printf("Marauders' Map v1.0\n");
+      fgets(buffer, BUF_SIZE, stdin);
+      int length = strlen(buffer);
+      strncpy(username, buffer, length-1);
+      username[length+1] = '\0';
+      sprintf(message_buffer,"New user joined: %s\n", username);
+      ret = send(sock, message_buffer, BUF_SIZE, 0);
+      if(ret < 0) {
+        printf("Error sending data");
+        exit(1);
+      }
+      username_flag = 1;
     }
 
-    while(fgets(buffer, BUF_SIZE, stdin) != NULL) {
-        puts("message_buffer");
-        char message_buffer[BUF_SIZE] = {0};
-        if (!username_flag) {
-          int length = strlen(buffer);
-          strncpy(username, buffer, length-1);
-          username[length+1] = '\0';
-          sprintf(message_buffer,"New user joined: %s\n", username);
-          username_flag = 1;
-        }
-        else { //occurs once user provides username
-          create_message(message_buffer, BUF_SIZE);
-          // sprintf(message_buffer,"%s", buffer);
-        }
-        // inserts username at start of message
-        ret = send(sock, message_buffer, BUF_SIZE, 0);
+    while(1) {
+        memset(message_buffer, 0, BUF_SIZE);
+        create_message(message_buffer, BUF_SIZE);
+        fprintf(stderr, "|%s|", message_buffer);
+        /* ret = send(sock, message_buffer, BUF_SIZE, 0);
         if(ret < 0) {
           printf("Error sending data");
           exit(1);
         }
-        memset(buffer, '0', BUF_SIZE);
+        */
+        sleep(2);
     }
-    close(sock);
-    pthread_exit(NULL);
     return 0;
 }

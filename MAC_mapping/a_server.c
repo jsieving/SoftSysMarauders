@@ -11,7 +11,7 @@
 
 #define TRUE   1
 #define FALSE  0
-#define PORT 9000
+#define PORT 8080
 #define BUF_SIZE 1024
 #define CLIENT_NUM 30
 #define CHAT_NUM 10

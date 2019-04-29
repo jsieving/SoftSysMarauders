@@ -31,11 +31,11 @@ void get_macs_strength(char** mac_array, int* strength_array, int length) {
   if(pid == 0) { //child
     close(fd[0]);
     dup2(fd[1], 1);
-
     int res = system("nmcli -f BSSID,SIGNAL -t -e no dev wifi");
     if(res == -1) {
       error("Error when running program 'nmcli'.");
     }
+    exit(0);
   }
 
   if(pid > 0) { //parent
@@ -151,13 +151,12 @@ GHashTable* make_mapping(char* filename) {
 }
 
 int get_near_rooms(Room** room_array, int* strength_array, int max_rooms) {
-  int scan_length = 20;
+  int scan_length = 10;
   char* mac_array[scan_length+1];
   mac_array[scan_length] = "\0";
   int s_array[scan_length+1];
   s_array[scan_length] = 0;
   get_macs_strength(mac_array, s_array, scan_length);
-
   char* filename = "MAC_rooms.txt";
   GHashTable* room_lookup = make_mapping(filename);
   // g_hash_table_foreach(room_lookup, print_room_entry, NULL);
@@ -194,14 +193,14 @@ int create_message(char* buffer, int buf_len) {
   int strength_array[max_rooms];
 
   rooms = get_near_rooms(near_rooms, strength_array, max_rooms);
+
   if (rooms < max_rooms) {
     printf("Warning in create_message: %d locations returned by get_near_rooms, %d expected.\n", rooms, max_rooms);
   }
-
   while (n < rooms) {
     // number of characters attempted to write, not including null terminator
     // returns attempted number of chars, even if buffer was too small.
-    check_end = snprintf(check_buffer, buf_len, "%s:%d;", near_rooms[n]->room_num, strength_array[n]);
+    check_end = snprintf(check_buffer, buf_len, "%d,%d,%d,%d-", near_rooms[n]->x, near_rooms[n]->y, near_rooms[n]->level, strength_array[n]);
     if (end + check_end < buf_len) { // number of characters will fit in buffer
       snprintf(&(buffer[end]), check_end+1, "%s", check_buffer); // size arg in snprintf includes '\0'
       end += check_end;
