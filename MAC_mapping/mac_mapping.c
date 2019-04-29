@@ -167,7 +167,7 @@ int get_near_rooms(Room** room_array, int* strength_array, int max_rooms) {
   while (mac_array[i] != NULL && n < max_rooms && n <= i) {
     room = (Room*) g_hash_table_lookup(room_lookup, (gchar*) mac_array[i]);
     if (room == NULL) {
-      puts("Error in get_near_rooms: room lookup failed.");
+      printf("\nError in get_near_rooms: room lookup failed.");
       printf("  Not a key: %s\n", mac_array[i]);
     } else {
       room_array[n] = room;
