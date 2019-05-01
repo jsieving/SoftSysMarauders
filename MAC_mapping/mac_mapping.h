@@ -8,8 +8,10 @@
 #include <glib.h>
 #include <glib/gstdio.h>
 
+extern int ERRORS_ON;
+
 void error(char *msg);
-void get_macs_strength(char** mac_array, int* strength_array, int length);
+int get_macs_strength(char** mac_array, int* strength_array, int length);
 
 // a room and its location.
 typedef struct {
@@ -32,8 +34,8 @@ void print_room_entry(void* key, void* value, void* data);
 
 GHashTable* make_mapping(char* filename);
 
-int get_near_rooms(Room** room_array, int* strength_array, int max_rooms);
+int get_near_rooms(GHashTable* room_lookup, Room** room_array, int* strength_array, int max_rooms);
 
-int create_message(char* buffer, int buf_len);
+int create_message(GHashTable* room_lookup, char* buffer, int buf_len);
 
 char* location(char* input);

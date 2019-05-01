@@ -9,18 +9,20 @@
 #include <glib/gstdio.h>
 #include "mac_mapping.h"
 
+int ERRORS_ON = 0;
+
 void error(char *msg)
 {
-    fprintf(stderr, "%s: %s\n", msg, strerror(errno));
+    if (ERRORS_ON) {fprintf(stderr, "%s: %s\n", msg, strerror(errno));}
     exit(1);
 }
 
-void get_macs_strength(char** mac_array, int* strength_array, int length) {
+int get_macs_strength(char** mac_array, int* strength_array, int length) {
   int status;
 
   int fd[2];
   if(pipe(fd)==-1) {
-    printf("Could not create pipe\n");
+    error("Could not create pipe");
   }
   pid_t pid = fork();
 
@@ -63,9 +65,12 @@ void get_macs_strength(char** mac_array, int* strength_array, int length) {
     if (WIFEXITED(status)) {
       status = WEXITSTATUS(status);
       if (status) { // if a process did not exit normally
-          printf("Process %d exited unsuccessfully with error code %d.\n", pid, status);
+          char msg[80];
+          sprintf(msg, "Process %d exited unsuccessfully with error code %d.", pid, status);
+          error(msg);
       }
     }
+    return num;
   }
 }
 
@@ -111,17 +116,16 @@ GHashTable* make_mapping(char* filename) {
   GHashTable* room_lookup = g_hash_table_new(g_str_hash, g_str_equal);
   gchar *text; // text from file
   gchar **lines; // list of lines
-  GError* error; // error buffer
+  GError* err_buf; // error buffer
   gchar* split = "\n";
 
   if (!filename) {
     filename = "MAC_rooms.txt";
   }
   // read the file contents and check that this was successful
-  gboolean res = g_file_get_contents(filename, &text, NULL, &error);
+  gboolean res = g_file_get_contents(filename, &text, NULL, &err_buf);
   if (res == 0) {
-    puts("Error in make_mapping: g_file_get_contents: failed to read file.");
-    exit(1);
+    error("Error in make_mapping-> g_file_get_contents-> failed to read file");
   }
 
   // split the text into lines
@@ -150,16 +154,12 @@ GHashTable* make_mapping(char* filename) {
   return room_lookup;
 }
 
-int get_near_rooms(Room** room_array, int* strength_array, int max_rooms) {
-  int scan_length = 10;
-  char* mac_array[scan_length+1];
-  mac_array[scan_length] = "\0";
-  int s_array[scan_length+1];
-  s_array[scan_length] = 0;
-  get_macs_strength(mac_array, s_array, scan_length);
-  char* filename = "MAC_rooms.txt";
-  GHashTable* room_lookup = make_mapping(filename);
-  // g_hash_table_foreach(room_lookup, print_room_entry, NULL);
+int get_near_rooms(GHashTable* room_lookup, Room** room_array, int* strength_array, int max_rooms) {
+  int max_scan_length = 20;
+  char* mac_array[max_scan_length+1];
+  int s_array[max_scan_length];
+  int result_length = get_macs_strength(mac_array, s_array, max_scan_length);
+  mac_array[result_length] = "\0";
 
   int i = 0;
   int n = 0;
@@ -167,12 +167,24 @@ int get_near_rooms(Room** room_array, int* strength_array, int max_rooms) {
   while (mac_array[i] != NULL && n < max_rooms && n <= i) {
     room = (Room*) g_hash_table_lookup(room_lookup, (gchar*) mac_array[i]);
     if (room == NULL) {
-      printf("\nError in get_near_rooms: room lookup failed.");
-      printf("  Not a key: %s\n", mac_array[i]);
+      if (ERRORS_ON) {
+        fprintf(stderr, "\nError in get_near_rooms: room lookup failed.");
+        fprintf(stderr, " Not a key: %s\n", mac_array[i]);
+      }
     } else {
-      room_array[n] = room;
-      strength_array[n] = s_array[i];
-      n++;
+      int c = 0;
+      int exists = 0;
+      while (room_array[c] != NULL) {
+        if (room_array[c] == room) {
+          exists = 1;
+        }
+        c++;
+      }
+      if (!exists) {
+        room_array[n] = room;
+        strength_array[n] = s_array[i];
+        n++;
+      }
     }
     i++;
   }
@@ -230,7 +242,7 @@ char* location(char* input) {
     return(result);
 }
 
-int create_message(char* buffer, int buf_len) {
+int create_message(GHashTable* room_lookup, char* buffer, int buf_len) {
   int n = 0;
   int end = 0;
   int rooms;
@@ -242,9 +254,9 @@ int create_message(char* buffer, int buf_len) {
   near_rooms[max_rooms] = NULL;
   int strength_array[max_rooms];
 
-  rooms = get_near_rooms(near_rooms, strength_array, max_rooms);
+  rooms = get_near_rooms(room_lookup, near_rooms, strength_array, max_rooms);
 
-  if (rooms < max_rooms) {
+  if (rooms < max_rooms && ERRORS_ON) {
     printf("Warning in create_message: %d locations returned by get_near_rooms, %d expected.\n", rooms, max_rooms);
   }
   while (n < rooms) {
@@ -256,12 +268,12 @@ int create_message(char* buffer, int buf_len) {
       end += check_end;
       n++;
     } else {
-      printf("Warning in create_message: %d bytes written out of %d attempted. Buffer length is %d.\n", end, end+check_end, buf_len);
+      if (ERRORS_ON) {printf("Warning in create_message: %d bytes written out of %d attempted. Buffer length is %d.\n", end, end+check_end, buf_len);}
       break;
     }
   }
 
-  if (n < max_rooms) {
+  if (n < max_rooms && ERRORS_ON) {
     printf("Warning in create_message: %d locations written, %d expected.\n", n, max_rooms);
   }
 

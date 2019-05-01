@@ -69,15 +69,16 @@ int main(int argc, char const *argv[])
     char * serverAddr;
     pthread_t rThread;
 
+
     if (catch_signal(SIGINT, handle_shutdown) == -1) {
         error("Signal catcher setup failed. Setting interrupt handler"); }
 
-    if (argc <2) { //checks that user input server ip address
-      printf("Missing server ip address");
-      exit(1);
+    if (argc > 1) { //checks that user input server ip address
+      serverAddr = argv[1]; //to get server ip address from command line
+    } else {
+      serverAddr = "127.0.0.1";
+      printf("Server ip address not specified. Set to %s.\n", serverAddr);
     }
-
-    serverAddr = argv[1]; //to get server ip address from command line
 
     if ((sock = socket(AF_INET, SOCK_STREAM, 0)) < 0)
     {
@@ -128,13 +129,16 @@ int main(int argc, char const *argv[])
       username_flag = 1;
     }
 
+    char* filename = "MAC_rooms.txt";
+    GHashTable* room_lookup = make_mapping(filename);
+
     while(1) {
         memset(message_buffer, 0, BUF_SIZE);
-        create_message(message_buffer, BUF_SIZE);
+        create_message(room_lookup, message_buffer, BUF_SIZE);
         char* loc = location(message_buffer);
-        fprintf(stderr, "|%s|", loc);
+        // fprintf(stderr, "|%s|", loc);
 
-        ret = send(sock, message_buffer, BUF_SIZE, 0);
+        ret = send(sock, loc, BUF_SIZE, 0);
         if(ret < 0) {
           printf("Error sending data");
           exit(1);
