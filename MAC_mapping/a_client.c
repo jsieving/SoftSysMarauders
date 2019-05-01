@@ -57,6 +57,10 @@ void handle_shutdown(int sig) {
     exit(EXIT_SUCCESS);
 }
 
+// int* get_coordinates(char* routers) {
+//
+// }
+
 int main(int argc, char const *argv[])
 {
     struct sockaddr_in serv_addr;
@@ -127,13 +131,14 @@ int main(int argc, char const *argv[])
     while(1) {
         memset(message_buffer, 0, BUF_SIZE);
         create_message(message_buffer, BUF_SIZE);
-        fprintf(stderr, "|%s|", message_buffer);
-        /* ret = send(sock, message_buffer, BUF_SIZE, 0);
+        char* loc = location(message_buffer);
+        fprintf(stderr, "|%s|", loc);
+
+        ret = send(sock, message_buffer, BUF_SIZE, 0);
         if(ret < 0) {
           printf("Error sending data");
           exit(1);
         }
-        */
         sleep(2);
     }
     return 0;

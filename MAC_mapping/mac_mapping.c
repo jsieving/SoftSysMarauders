@@ -180,6 +180,56 @@ int get_near_rooms(Room** room_array, int* strength_array, int max_rooms) {
   return n;
 }
 
+/* takes in a char array representing 3 nearest routers and returns a char array
+representing the triangulated x, y coordinates and floor */
+char* location(char* input) {
+    char* routers = strdup(input);
+
+    int stats[4][3] = {0};
+    char* r[3];
+
+    char delim1[] = "-";
+    char delim2[] = ",";
+
+    int flag = 0;
+    char* p;
+
+    //separates rounters and stores them in r[]
+    for(int i=0; i<3; i++) {
+        if(flag==0) {
+            p = strtok(routers, delim1);
+            flag = 1;
+        } else {
+            p = strtok(NULL, delim1);
+        }
+        r[i] = strdup(p);
+    }
+
+    //extracts x, y, floor, and strength from each router
+    for(int i=0; i<3; i++) {
+        stats[0][i] = atoi(strtok(r[i], delim2));
+
+        for(int j=1; j<4; j++) {
+            stats[j][i] = atoi(strtok(NULL, delim2));
+        }
+    }
+
+    //triangulation
+    float tot_strength = stats[3][0] + stats[3][1] + stats[3][2];
+    //weighting routers based on strength
+    float coef_A = stats[3][0]/tot_strength;
+    float coef_B = stats[3][1]/tot_strength;
+    float coef_C = stats[3][2]/tot_strength;
+
+    float X = stats[0][0]*coef_A + stats[0][1]*coef_B + stats[0][2]*coef_C;
+    float Y = stats[1][0]*coef_A + stats[1][1]*coef_B + stats[1][2]*coef_C;
+
+    char* result = calloc(32, sizeof(char));
+    sprintf(result, "%.2f, %.2f, %d\r\n", X, Y, stats[2][0]);
+
+    return(result);
+}
+
 int create_message(char* buffer, int buf_len) {
   int n = 0;
   int end = 0;
