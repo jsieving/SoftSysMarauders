@@ -17,6 +17,8 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 */
-
+// remember to divide the coordinates by 3, so total image dimensions are 920 x 770
 #define SCREEN_WIDTH   1280
-#define SCREEN_HEIGHT  720
+#define SCREEN_HEIGHT  780
+
+#define MAX_NAME_LENGTH        32

@@ -19,11 +19,17 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
 #include "input.h"
+//
+// void doMouseButtonDown(SDL_MouseButtonEvent *event)
+// { // link mouse click event to function of buttons
+// 	app.mouse.button[event->button] = 1;
+// }
+
 
 void doInput(void)
 {
 	SDL_Event event;
-	
+
 	while (SDL_PollEvent(&event))
 	{
 		switch (event.type)
@@ -32,8 +38,14 @@ void doInput(void)
 				exit(0);
 				break;
 
+			// case SDL_MOUSEBUTTONDOWN:
+			// 	doMouseButtonDown(&event.button);
+			// 	break;
+
 			default:
 				break;
 		}
 	}
+
+	SDL_GetMouseState(&app.mouse.x, &app.mouse.y);
 }

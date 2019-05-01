@@ -46,11 +46,16 @@ void initSDL(void)
 
 	app.renderer = SDL_CreateRenderer(app.window, -1, rendererFlags);
 
+	IMG_Init(IMG_INIT_PNG | IMG_INIT_JPG);
+
 	if (!app.renderer)
 	{
 		printf("Failed to create renderer: %s\n", SDL_GetError());
 		exit(1);
 	}
+
+	// make sure the native cursor is off
+	SDL_ShowCursor(0);
 }
 
 void cleanup(void)

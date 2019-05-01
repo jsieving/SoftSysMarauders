@@ -23,19 +23,44 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 int main(int argc, char *argv[])
 {
 	memset(&app, 0, sizeof(App));
-	
+	memset(&background, 0, sizeof(Entity));
+	// memset(&player, 0, sizeof(Player));
+
 	initSDL();
-	
+
+	// initializing the background image
+	background.x = -100;
+	background.y = 0;
+	background.texture = loadTexture("graphics/footprints.jpg");
+
+	// player->x = -100;
+	// player->y = 0;
+	// player->texture = loadTexture("graphics/person.png");
+
 	atexit(cleanup);
-	
+
+	// initGame();
+	initStage();
+	// initPlayer(500,500);
+
 	while (1)
 	{
 		prepareScene();
-		
+
+		// adding background image to screen, comes after prepare scene
+		blit(background.texture, background.x, background.y, 0, 1.1);
+
+		// adding background image to screen, comes after prepare scene
+		// blit(player->texture, player->x, player->y, 0, .07);
+
 		doInput();
-		
+
+		// where the mouse logic happens
+		app.delegate.logic(); // does nothing at the moment
+		app.delegate.draw(); // draws mouse icon, and players
+
 		presentScene();
-		
+
 		SDL_Delay(16);
 	}
 

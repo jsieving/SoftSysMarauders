@@ -18,7 +18,37 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 */
 
+typedef struct Player Player;
+
+typedef struct {
+	int x;
+	int y;
+} Mouse;
+
+typedef struct {
+	void (*logic)(void);
+	void (*draw)(void);
+} Delegate;
+
+// For drawing images
+typedef struct {
+	int x;
+	int y;
+	SDL_Texture *texture;
+} Entity;
+
+struct Player{
+	int x;
+	int y;
+	char* name;
+	SDL_Texture *texture;
+	Player *next;
+};
+
 typedef struct {
 	SDL_Renderer *renderer;
 	SDL_Window *window;
+	Delegate delegate;
+	Mouse mouse;
+	Player *pHead, *pTail; // for the list of users
 } App;
