@@ -24,7 +24,15 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // { // link mouse click event to function of buttons
 // 	app.mouse.button[event->button] = 1;
 // }
+void doMouseButtonUp(SDL_MouseButtonEvent *event)
+{
+	app.mouse.button[event->button] = 0;
+}
 
+void doMouseButtonDown(SDL_MouseButtonEvent *event)
+{
+	app.mouse.button[event->button] = 1;
+}
 
 void doInput(void)
 {
@@ -38,9 +46,13 @@ void doInput(void)
 				exit(0);
 				break;
 
-			// case SDL_MOUSEBUTTONDOWN:
-			// 	doMouseButtonDown(&event.button);
-			// 	break;
+			case SDL_MOUSEBUTTONDOWN:
+				doMouseButtonDown(&event.button);
+				break;
+
+			case SDL_MOUSEBUTTONUP:
+				doMouseButtonUp(&event.button);
+				break;
 
 			default:
 				break;

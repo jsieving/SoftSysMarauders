@@ -58,6 +58,14 @@ void initSDL(void)
 	SDL_ShowCursor(0);
 }
 
+// initializing the stage, with the mouse graphics:
+static SDL_Texture *targetterTexture;
+
+void initCursor(void)
+{	// initialize the cursor image
+	app.mouse.texture = loadTexture("graphics/wand.png");
+}
+
 void cleanup(void)
 {
 	SDL_DestroyRenderer(app.renderer);

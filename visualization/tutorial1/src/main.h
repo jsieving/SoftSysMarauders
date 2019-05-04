@@ -26,12 +26,18 @@ extern void cleanup(void);
 extern void doInput(void);
 // extern void initGame(void);
 extern void initSDL(void);
-extern void initPlayer(int x, int y);
-extern void initStage(void);
+extern Entity* initPlayer(int x, int y, Entity* next);
+extern void drawEntities(Entity* list);
+
 extern void prepareScene(void);
 extern SDL_Texture *loadTexture(char *filename);
 extern void presentScene(void);
 
+// for initializing the mouse image. Drawing happens in presentScene() of draw.c
+extern void initCursor(void);
+
+// reading clicks of Mouse
+extern void readClicks(void);
+
 App app;
 Entity background;
-Player *player;
