@@ -18,8 +18,25 @@ Entity* initPlayer(int x, int y, Entity* next)
 	return player;
 }
 
-void doPlayer(void)
+void readClicks(void)
 {
+	if (app.mouse.button[SDL_BUTTON_LEFT])
+	{
+		// get the coordinates of the mouse when it was clicked
+		int x = app.mouse.x;
+		int y = app.mouse.y;
+
+		// hardcode the coordinates of all the boxes
+		if( ( x > 0 ) && ( x < 500 ) && ( y > 0 ) && ( y < 500 ) ){
+			//change the background.texture to the floor that was clicked on
+			app.background.texture = loadTexture("graphics/fake.jpeg");
+		}
+		else{
+			app.background.texture = loadTexture("graphics/footprints.jpg");
+		}
+
+		app.mouse.button[SDL_BUTTON_LEFT] = 0;
+	}
 
 }
 

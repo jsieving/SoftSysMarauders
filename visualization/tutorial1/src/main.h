@@ -35,7 +35,9 @@ extern void presentScene(void);
 
 // for initializing the mouse image. Drawing happens in presentScene() of draw.c
 extern void initCursor(void);
-// extern static void draw_cursor(void);
+
+// reading clicks of Mouse
+extern void readClicks(void);
 
 App app;
 Entity background;

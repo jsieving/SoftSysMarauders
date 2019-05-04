@@ -39,5 +39,5 @@ typedef struct {
 	SDL_Renderer *renderer;
 	SDL_Window *window;
 	Mouse mouse;
-	struct Entity *pHead, *pTail; // for the list of users
+	Entity background;
 } App;

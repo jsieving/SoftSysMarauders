@@ -23,15 +23,13 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 int main(int argc, char *argv[])
 {
 	memset(&app, 0, sizeof(App));
-	memset(&background, 0, sizeof(Entity));
-	// memset(&player, 0, sizeof(Player));
 
 	initSDL();
 
 	// initializing the background image
-	background.x = -100;
-	background.y = 0;
-	background.texture = loadTexture("graphics/footprints.jpg");
+	app.background.x = 0;
+	app.background.y = 0;
+	app.background.texture = loadTexture("graphics/footprints.jpg");
 
 // initializing people (wrap in for loop later)
 
@@ -59,9 +57,10 @@ int main(int argc, char *argv[])
 		doInput();
 
 		// App draw functions called where
+		readClicks();
 
 		// adding background image to screen, comes right after prepare scene
-		blit(background.texture, background.x, background.y, 0, 1.1);
+		blit(app.background.texture, app.background.x, app.background.y, 0, 1.1);
 		drawEntities(p3);
 
 		// blits cursor and writes the scen. Anything blitted afterwards will not present
