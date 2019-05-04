@@ -4,19 +4,18 @@ This is code for drawing people(entities) to the screen
 
 #include "entities.h"
 
-void initPlayer(int x, int y)
+Entity* initPlayer(int x, int y, Entity* next)
 {
-	player = malloc(sizeof(Entity));
-	memset(player, 0, sizeof(Entity));
-  // adding new player to the end of the list
-	app.pTail->next = player;
-	app.pTail = player;
+	Entity* player = malloc(sizeof(Entity));
+	// memset(&player, 0, sizeof(Entity));
 
 	player->texture = loadTexture("graphics/person.png");
-	player->x = x;
-	player->y = y;
+	player->x =(int) (x/2.86)+110;
+	player->y =(int) (y/2.86)+14;
 
-	// SDL_QueryTexture(player->texture, NULL, NULL, &player->w, &player->h);
+	//pushing new player to beginning of list
+	player->next = next;
+	return player;
 }
 
 void doPlayer(void)
@@ -28,14 +27,14 @@ void doEntities(void) {
 }
 
 
-void drawEntities(void) {
+void drawEntities(Entity* list) {
   // Draws all people using app to the screen
 
-	Player *e;
+	Entity *e;
 
-	for (e = app.pHead->next ; e != NULL ; e = e->next)
+	for (e = list; e != NULL ; e = e->next)
 	{
     // this is probably where we want to show their names as well
-		blit(e->texture, e->x/3, e->y/3, 1, .07);
+		blit(e->texture, e->x, e->y, 1, .07);
 	}
 }

@@ -10,7 +10,6 @@ _OBJS += draw.o
 _OBJS += entities.o
 _OBJS += init.o input.o
 _OBJS += main.o
-_OBJS += stage.o
 
 OBJS = $(patsubst %,$(OUT)/%,$(_OBJS))
 

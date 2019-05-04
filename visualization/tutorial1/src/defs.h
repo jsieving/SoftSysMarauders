@@ -18,6 +18,11 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 */
 // remember to divide the coordinates by 3, so total image dimensions are 920 x 770
+// original image 2749 width
+// ashley's image has width 960
+// divide by 2.86 scaling factor
+// add 110 x, 14 y
+
 #define SCREEN_WIDTH   1280
 #define SCREEN_HEIGHT  780
 

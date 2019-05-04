@@ -24,10 +24,12 @@ void prepareScene(void)
 {
 	SDL_SetRenderDrawColor(app.renderer, 255, 255, 255, 255);
 	SDL_RenderClear(app.renderer);
+
 }
 
 void presentScene(void)
 {
+	blit(app.mouse.texture, app.mouse.x, app.mouse.y, 1, .7);
 	SDL_RenderPresent(app.renderer);
 }
 
@@ -56,16 +58,21 @@ void blit(SDL_Texture *texture, int x, int y, int center, double scale)
 
 	SDL_QueryTexture(texture, NULL, NULL, &dest.w, &dest.h);
 
+	// this scales the image!
+	dest.w = dest.w*scale;
+	dest.h = dest.h*scale;
+	
 	if (center)
 	{
 		dest.x -= dest.w / 2;
 		dest.y -= dest.h / 2;
 	}
 
-	// this scales the image!
-	dest.w = dest.w*scale;
-	dest.h = dest.h*scale;
-
 // SDL_RenderCopy takes four parameters: the renderer, texture, rectangular regions of the src texture and the target renderer.
 	SDL_RenderCopy(app.renderer, texture, NULL, &dest);
 }
+
+// static void draw_cursor(void)
+// {
+// 	blit(app.mouse.texture, app.mouse.x, app.mouse.y, 1, .7);
+// }
