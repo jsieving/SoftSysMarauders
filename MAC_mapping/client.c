@@ -127,21 +127,19 @@ int main(int argc, char const *argv[])
 
     char* filename = "MAC_rooms.txt";
     GHashTable* room_lookup = make_mapping(filename);
-    Queue* loc_log = make_queue(100);
+    Queue* loc_log = make_queue(10);
 
     while(1) {
         memset(message_buffer, 0, BUF_SIZE);
         Record* last_loc = location(room_lookup);
         enqueue(last_loc, loc_log);
-
         create_message(loc_log, message_buffer, BUF_SIZE);
-
         ret = send(sock, message_buffer, BUF_SIZE, 0);
         if(ret < 0) {
           printf("Error sending data");
           exit(1);
         }
-        sleep(2);
+        sleep(5);
     }
     return 0;
 }

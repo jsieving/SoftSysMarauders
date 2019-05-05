@@ -128,6 +128,10 @@ void free_record(void* record) {
   free(record);
 }
 
+void print_record(Record* record) {
+  printf("(%d, %d), level %d\n", record->x, record->y, record->level);
+}
+
 // Creates a queue with the given max size.
 Queue* make_queue(int max_size) {
   Queue* queue = malloc(sizeof(Queue));
@@ -149,6 +153,19 @@ void free_queue(void* queue) {
     curr = next;
   }
   free(queue);
+}
+
+// prints a Queue, and all associated Records.
+void print_queue(Queue* queue) {
+  Record* curr = queue->head;
+  Record* next;
+  printf("Queue: full %d/%d\n", queue->size, queue->max_size);
+  printf("Total X: %d; total Y: %d\n", queue->total_x, queue->total_y);
+  while(curr) {
+    next = curr->next;
+    print_record(curr);
+    curr = next;
+  }
 }
 
 // perhaps poorly named... adds a Record to the head of a Queue,
@@ -264,9 +281,9 @@ Record* location(GHashTable* room_lookup) {
     Room* near_rooms[max_rooms+1];
     near_rooms[max_rooms] = NULL;
     int strength_array[max_rooms];
-    int tot_strength;
-    int avg_x;
-    int avg_y;
+    int tot_strength = 0;
+    int avg_x = 0;
+    int avg_y = 0;
     int best_level;
     int max_strength = 0;
 

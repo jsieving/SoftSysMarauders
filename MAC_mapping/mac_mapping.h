@@ -22,7 +22,6 @@ typedef struct {
   int level;
   int x;
   int y;
-  int strength;
   void* next;
   void* prev;
 } Record;
@@ -55,10 +54,14 @@ void print_room_entry(void* key, void* value, void* data);
 Record* make_record(int x, int y, int level, Record* prev, Record* next);
 // frees a Record.
 void free_record(void* record);
+
+void print_record(Record* record);
 // Creates a queue with the given max size.
 Queue* make_queue(int max_size);
 // frees a Queue, and all associated Records.
 void free_queue(void* queue);
+// prints a Queue, and all associated Records.
+void print_queue(Queue* queue);
 // perhaps poorly named... adds a Record to the head of a Queue,
 // and if the queue has exceeded its size limit, dequeues from the tail
 void enqueue(Record* new, Queue* queue);
