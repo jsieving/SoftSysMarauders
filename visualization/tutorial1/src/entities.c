@@ -27,12 +27,18 @@ void readClicks(void)
 		int y = app.mouse.y;
 
 		// hardcode the coordinates of all the boxes
-		if( ( x > 0 ) && ( x < 500 ) && ( y > 0 ) && ( y < 500 ) ){
+		if( ( x > 90 ) && ( x < 220 ) && ( y > 237 ) && ( y < 300 ) ){
 			//change the background.texture to the floor that was clicked on
-			app.background.texture = loadTexture("graphics/fake.jpeg");
+			app.background.texture = loadTexture("graphics/wh1.png");
 		}
-		else{
-			app.background.texture = loadTexture("graphics/footprints.jpg");
+		if( (x > 90) && ( x < 220) && (y > 320) && (y < 400)){
+			app.background.texture = loadTexture("graphics/wh2.png");
+		}
+		if( (x > 90) && ( x < 220) && (y > 420) && (y < 500)){
+			app.background.texture = loadTexture("graphics/wh3.png");
+		}
+		if( (x > 90) && ( x < 220) && (y > 520) && (y < 600)){
+			app.background.texture = loadTexture("graphics/wh4.png");
 		}
 
 		app.mouse.button[SDL_BUTTON_LEFT] = 0;

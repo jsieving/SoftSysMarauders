@@ -27,3 +27,5 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define SCREEN_HEIGHT  780
 
 #define MAX_NAME_LENGTH        32
+
+//hardcode or provide the IP address of host

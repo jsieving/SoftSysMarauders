@@ -22,6 +22,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 int main(int argc, char *argv[])
 {
+	// initialize client thread
+
 	memset(&app, 0, sizeof(App));
 
 	initSDL();
@@ -29,7 +31,7 @@ int main(int argc, char *argv[])
 	// initializing the background image
 	app.background.x = 0;
 	app.background.y = 0;
-	app.background.texture = loadTexture("graphics/footprints.jpg");
+	app.background.texture = loadTexture("graphics/wh1.png");
 
 // initializing people (wrap in for loop later)
 
@@ -60,7 +62,7 @@ int main(int argc, char *argv[])
 		readClicks();
 
 		// adding background image to screen, comes right after prepare scene
-		blit(app.background.texture, app.background.x, app.background.y, 0, 1.1);
+		blit(app.background.texture, app.background.x, app.background.y, 0, 1);
 		drawEntities(p3);
 
 		// blits cursor and writes the scen. Anything blitted afterwards will not present

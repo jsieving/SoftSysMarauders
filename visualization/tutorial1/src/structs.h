@@ -31,6 +31,7 @@ typedef struct {
 	int x;
 	int y;
 	char* name;
+	int floor;
 	SDL_Texture *texture;
 	struct Entity *next;
 } Entity;
