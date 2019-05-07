@@ -72,8 +72,8 @@ int get_macs_strength(char** mac_array, int* strength_array, int length) {
     }
     return num;
   }
+  return 0;
 }
-
 
 // creates a Room.
 Room* make_room(gchar* room_num, gint level, gint x, gint y) {
@@ -110,6 +110,87 @@ void print_room_entry(void* key, void* value, void* data) {
   gchar* MAC = (gchar*) key;
   Room* room = (Room*) value;
   printf("%s ==> %s, level %d, (%d, %d)\n", MAC, room->room_num, room->level, room->x, room->y);
+}
+
+// creates a Record of triangulated location.
+Record* make_record(int x, int y, int level, Record* prev, Record* next) {
+  Record* record = malloc(sizeof(Record));
+  record->x = x;
+  record->y = y;
+  record->level = level;
+  record->prev = prev;
+  record->next = next;
+  return record;
+}
+
+// frees a Record.
+void free_record(void* record) {
+  free(record);
+}
+
+void print_record(Record* record) {
+  printf("(%d, %d), level %d\n", record->x, record->y, record->level);
+}
+
+// Creates a queue with the given max size.
+Queue* make_queue(int max_size) {
+  Queue* queue = malloc(sizeof(Queue));
+  queue->size = 0;
+  queue->max_size = max_size;
+  queue->total_x = 0;
+  queue->total_y = 0;
+  return queue;
+}
+
+// frees a Queue, and all associated Records.
+void free_queue(void* queue) {
+  Queue* q = (Queue*) queue;
+  Record* curr = q->head;
+  Record* next;
+  while(curr) {
+    next = curr->next;
+    free_record(curr);
+    curr = next;
+  }
+  free(queue);
+}
+
+// prints a Queue, and all associated Records.
+void print_queue(Queue* queue) {
+  Record* curr = queue->head;
+  Record* next;
+  printf("Queue: full %d/%d\n", queue->size, queue->max_size);
+  printf("Total X: %d; total Y: %d\n", queue->total_x, queue->total_y);
+  while(curr) {
+    next = curr->next;
+    print_record(curr);
+    curr = next;
+  }
+}
+
+// perhaps poorly named... adds a Record to the head of a Queue,
+// and if the queue has exceeded its size limit, dequeues from the tail
+void enqueue(Record* new, Queue* queue) {
+  new->next = queue->head;
+  if (queue->size == 0) {
+    queue->tail = new;
+  } else {
+    queue->head->prev = new;
+  }
+  queue->head = new;
+  queue->size++;
+  queue->total_x += new->x;
+  queue->total_y += new->y;
+  queue->last_level = new->level;
+  if (queue->size > queue->max_size) {
+    Record* nexttolast = (Record*) queue->tail->prev;
+    nexttolast->next = NULL;
+    queue->total_x -= queue->tail->x;
+    queue->total_y -= queue->tail->y;
+    queue->size--;
+    free_record(queue->tail);
+    queue->tail = nexttolast;
+  }
 }
 
 GHashTable* make_mapping(char* filename) {
@@ -194,88 +275,47 @@ int get_near_rooms(GHashTable* room_lookup, Room** room_array, int* strength_arr
 
 /* takes in a char array representing 3 nearest routers and returns a char array
 representing the triangulated x, y coordinates and floor */
-char* location(char* input) {
-    char* routers = strdup(input);
+Record* location(GHashTable* room_lookup) {
+    int rooms;
+    int max_rooms = 3;
+    Room* near_rooms[max_rooms+1];
+    near_rooms[max_rooms] = NULL;
+    int strength_array[max_rooms];
+    int tot_strength = 0;
+    int avg_x = 0;
+    int avg_y = 0;
+    int best_level;
+    int max_strength = 0;
 
-    int stats[4][3] = {0};
-    char* r[3];
+    rooms = get_near_rooms(room_lookup, near_rooms, strength_array, max_rooms);
 
-    char delim1[] = "-";
-    char delim2[] = ",";
-
-    int flag = 0;
-    char* p;
-
-    //separates rounters and stores them in r[]
-    for(int i=0; i<3; i++) {
-        if(flag==0) {
-            p = strtok(routers, delim1);
-            flag = 1;
-        } else {
-            p = strtok(NULL, delim1);
-        }
-        r[i] = strdup(p);
+    if (rooms < max_rooms && ERRORS_ON) {
+      printf("Warning in create_message: %d locations returned by get_near_rooms, %d expected.\n", rooms, max_rooms);
+    }
+    int i = 0;
+    while (near_rooms[i] != NULL) {
+      tot_strength += strength_array[i];
+      avg_x += near_rooms[i]->x * strength_array[i];
+      avg_y += near_rooms[i]->y * strength_array[i];
+      if (strength_array[i] > max_strength) {
+        max_strength = strength_array[i];
+        best_level = near_rooms[i]->level;
+      }
+      i++;
     }
 
-    //extracts x, y, floor, and strength from each router
-    for(int i=0; i<3; i++) {
-        stats[0][i] = atoi(strtok(r[i], delim2));
+    avg_x /= tot_strength;
+    avg_y /= tot_strength;
 
-        for(int j=1; j<4; j++) {
-            stats[j][i] = atoi(strtok(NULL, delim2));
-        }
-    }
-
-    //triangulation
-    float tot_strength = stats[3][0] + stats[3][1] + stats[3][2];
-    //weighting routers based on strength
-    float coef_A = stats[3][0]/tot_strength;
-    float coef_B = stats[3][1]/tot_strength;
-    float coef_C = stats[3][2]/tot_strength;
-
-    float X = stats[0][0]*coef_A + stats[0][1]*coef_B + stats[0][2]*coef_C;
-    float Y = stats[1][0]*coef_A + stats[1][1]*coef_B + stats[1][2]*coef_C;
-
-    char* result = calloc(32, sizeof(char));
-    sprintf(result, "%.2f, %.2f, %d\r\n", X, Y, stats[2][0]);
-
-    return(result);
+    return make_record(avg_x, avg_y, best_level, NULL, NULL);
 }
 
-int create_message(GHashTable* room_lookup, char* buffer, int buf_len) {
-  int n = 0;
-  int end = 0;
-  int rooms;
-  int check_end = 0;
-  char check_buffer[buf_len]; // in place to make sure input buffer does not overflow
+int create_message(Queue* queue, char* buffer, int buf_len) {
+  int x = queue->total_x/queue->size;
+  int y = queue->total_y/queue->size;
+  int level = queue->last_level;
 
-  int max_rooms = 3;
-  Room* near_rooms[max_rooms+1];
-  near_rooms[max_rooms] = NULL;
-  int strength_array[max_rooms];
+  int n = snprintf(buffer, buf_len, "%d, %d, %d\r\n", x, y, level);
 
-  rooms = get_near_rooms(room_lookup, near_rooms, strength_array, max_rooms);
-
-  if (rooms < max_rooms && ERRORS_ON) {
-    printf("Warning in create_message: %d locations returned by get_near_rooms, %d expected.\n", rooms, max_rooms);
-  }
-  while (n < rooms) {
-    // number of characters attempted to write, not including null terminator
-    // returns attempted number of chars, even if buffer was too small.
-    check_end = snprintf(check_buffer, buf_len, "%d,%d,%d,%d-", near_rooms[n]->x, near_rooms[n]->y, near_rooms[n]->level, strength_array[n]);
-    if (end + check_end < buf_len) { // number of characters will fit in buffer
-      snprintf(&(buffer[end]), check_end+1, "%s", check_buffer); // size arg in snprintf includes '\0'
-      end += check_end;
-      n++;
-    } else {
-      if (ERRORS_ON) {printf("Warning in create_message: %d bytes written out of %d attempted. Buffer length is %d.\n", end, end+check_end, buf_len);}
-      break;
-    }
-  }
-
-  if (n < max_rooms && ERRORS_ON) {
-    printf("Warning in create_message: %d locations written, %d expected.\n", n, max_rooms);
-  }
-
-  return end;
+  return n;
 }
