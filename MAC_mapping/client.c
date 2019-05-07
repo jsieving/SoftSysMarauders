@@ -127,7 +127,7 @@ int main(int argc, char const *argv[])
 
     char* filename = "MAC_rooms.txt";
     GHashTable* room_lookup = make_mapping(filename);
-    Queue* loc_log = make_queue(10);
+    Queue* loc_log = make_queue(20);
 
     while(1) {
         memset(message_buffer, 0, BUF_SIZE);
