@@ -246,7 +246,7 @@ int get_near_rooms(GHashTable* room_lookup, Room** room_array, int* strength_arr
   char* mac_array[max_scan_length+1];
   int s_array[max_scan_length];
   int result_length = get_macs_strength(mac_array, s_array, max_scan_length); // 3
-  mac_array[result_length] = "\0";
+  mac_array[result_length] = NULL;
 
   int i = 0;
   int n = 0;
@@ -314,8 +314,14 @@ Record* location(GHashTable* room_lookup) {
       i++;
     }
 
-    avg_x /= tot_strength;
-    avg_y /= tot_strength;
+    if (tot_strength != 0) {
+      avg_x /= tot_strength;
+      avg_y /= tot_strength;
+    } else {
+      avg_x = 10;
+      avg_y = 10;
+      best_level = 1;
+    }
 
     return make_record(avg_x, avg_y, best_level, NULL, NULL);
 }

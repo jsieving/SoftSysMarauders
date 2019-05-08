@@ -53,7 +53,7 @@ void blit(SDL_Texture *texture, int x, int y, char* name, int center, double sca
 		dest.y -= dest.h / 2;
 	}
 
-	TTF_Font* HP = TTF_OpenFont("graphics/hp.TTF", 24); //this opens a font style and sets a size
+	TTF_Font* HP = TTF_OpenFont("graphics/hp.TTF", 100); //this opens a font style and sets a size
 	SDL_Color Black = {0,0,0};  // this is the color in rgb format, maxing out all would give you the color white, and it will be your text's color
 
 	// name Code	// shows the name
@@ -64,7 +64,21 @@ void blit(SDL_Texture *texture, int x, int y, char* name, int center, double sca
 
 // SDL_RenderCopy takes four parameters: the renderer, texture, rectangular regions of the src texture and the target renderer.
 	SDL_RenderCopy(app.renderer, texture, NULL, &dest);
+
+	dest.y += dest.h/2;
+	dest.h = 40;
+	dest.w = 40;
+	if(name != NULL){
+		dest.w = (int)((strlen(name)) * 20);
+		dest.x = x-dest.w/2;
+	}
+
 	SDL_RenderCopy(app.renderer, Message, NULL, &dest);
+
+	// clean up text rendering tools
+	TTF_CloseFont(HP);
+	SDL_DestroyTexture(Message);
+	SDL_FreeSurface(surfaceMessage);
 }
 
 // static void draw_cursor(void)

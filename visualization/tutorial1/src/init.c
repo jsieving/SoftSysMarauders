@@ -33,6 +33,7 @@ void initSDL(void)
 		printf("Couldn't initialize SDL: %s\n", SDL_GetError());
 		exit(1);
 	}
+	TTF_Init();
 
 	app.window = SDL_CreateWindow("Marauder's Map", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, windowFlags);
 
@@ -68,9 +69,12 @@ void initCursor(void)
 
 void cleanup(void)
 {
+
 	SDL_DestroyRenderer(app.renderer);
 
 	SDL_DestroyWindow(app.window);
+
+	TTF_Quit();
 
 	SDL_Quit();
 }

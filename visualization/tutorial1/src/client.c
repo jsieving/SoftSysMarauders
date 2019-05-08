@@ -107,9 +107,8 @@ void handle_shutdown(int sig) {
 }
 
 // run_client
-int main() // char* ip
+int run_client(char* ip) // char* ip
 {
-    char* ip = NULL;
     struct sockaddr_in serv_addr;
     char * serverAddr;
     pthread_t recvThread;
