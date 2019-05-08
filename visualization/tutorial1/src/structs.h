@@ -41,4 +41,6 @@ typedef struct {
 	SDL_Window *window;
 	Mouse mouse;
 	Entity background;
+	struct Entity *head; // keeps track of head of the list
+	int start;
 } App;

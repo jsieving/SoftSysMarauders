@@ -1,6 +1,6 @@
 /*
 This file includes the functions related to displaying graphics on the screen:
-	- prepareScene(void) : 
+	- prepareScene(void) :
 */
 
 #include "draw.h"
@@ -14,7 +14,7 @@ void prepareScene(void)
 
 void presentScene(void)
 {
-	blit(app.mouse.texture, app.mouse.x, app.mouse.y, 1, .7);
+	blit(app.mouse.texture, app.mouse.x, app.mouse.y, NULL, 1, .7);
 	SDL_RenderPresent(app.renderer);
 }
 
@@ -29,7 +29,7 @@ SDL_Texture *loadTexture(char *filename)
 	return texture;
 }
 
-void blit(SDL_Texture *texture, int x, int y, int center, double scale)
+void blit(SDL_Texture *texture, int x, int y, char* name, int center, double scale)
 /*Draws the specified texture on screen at the specified x and y coordinates.
 	if center = 1: center the picture
 	else: blit by the upper right corner
@@ -53,8 +53,18 @@ void blit(SDL_Texture *texture, int x, int y, int center, double scale)
 		dest.y -= dest.h / 2;
 	}
 
+	TTF_Font* HP = TTF_OpenFont("graphics/hp.TTF", 24); //this opens a font style and sets a size
+	SDL_Color Black = {0,0,0};  // this is the color in rgb format, maxing out all would give you the color white, and it will be your text's color
+
+	// name Code	// shows the name
+	SDL_Surface* surfaceMessage = TTF_RenderText_Solid(HP, name, Black); // as TTF_RenderText_Solid could only be used on SDL_Surface then you have to create the surface first
+
+	SDL_Texture* Message = SDL_CreateTextureFromSurface(app.renderer, surfaceMessage); //now you can convert it into a texture
+
+
 // SDL_RenderCopy takes four parameters: the renderer, texture, rectangular regions of the src texture and the target renderer.
 	SDL_RenderCopy(app.renderer, texture, NULL, &dest);
+	SDL_RenderCopy(app.renderer, Message, NULL, &dest);
 }
 
 // static void draw_cursor(void)

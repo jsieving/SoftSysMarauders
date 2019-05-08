@@ -20,14 +20,20 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "common.h"
 
-extern void blit(SDL_Texture *texture, int x, int y, int center, double scale);
+// from client.c
+extern int run_client(char* ip);
+
+// from draw.c
+extern void blit(SDL_Texture *texture, int x, int y, char* name, int center, double scale);
 
 extern void cleanup(void);
 extern void doInput(void);
-// extern void initGame(void);
+// from init.c
 extern void initSDL(void);
-extern Entity* initPlayer(int x, int y, Entity* next);
-extern void drawEntities(Entity* list);
+
+// from entities.c
+extern Entity* initPlayer(int x, int y, char* name, int floor);
+extern void drawEntities();
 
 extern void prepareScene(void);
 extern SDL_Texture *loadTexture(char *filename);

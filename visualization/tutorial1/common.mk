@@ -6,6 +6,8 @@ vpath %.h $(SEARCHPATH)
 
 DEPS += defs.h structs.h
 
+_OBJS += client.o
+_OBJS += mac_mapping.o
 _OBJS += draw.o
 _OBJS += entities.o
 _OBJS += init.o input.o

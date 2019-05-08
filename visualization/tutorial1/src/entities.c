@@ -4,7 +4,7 @@ This is code for drawing people(entities) to the screen
 
 #include "entities.h"
 
-Entity* initPlayer(int x, int y, Entity* next)
+Entity* initPlayer(int x, int y, char* name, int f)
 {
 	Entity* player = malloc(sizeof(Entity));
 	// memset(&player, 0, sizeof(Entity));
@@ -13,8 +13,14 @@ Entity* initPlayer(int x, int y, Entity* next)
 	player->x =(int) (x/2.86)+110;
 	player->y =(int) (y/2.86)+14;
 
+	char* n = malloc(strlen(name)+1);
+	n = name;
+	player->name = n;
+	player->floor = f;
+
 	//pushing new player to beginning of list
-	player->next = next;
+	player->next = app.head;
+	app.head = player;
 	return player;
 }
 
@@ -50,14 +56,36 @@ void doEntities(void) {
 }
 
 
-void drawEntities(Entity* list) {
+void drawEntities() {
   // Draws all people using app to the screen
+	TTF_Font* HP = TTF_OpenFont("graphics/hp.TTF", 24); //this opens a font style and sets a size
+	SDL_Color Black = {0,0,0};  // this is the color in rgb format, maxing out all would give you the color white, and it will be your text's color
 
+	// Blit the person image
 	Entity *e;
 
-	for (e = list; e != NULL ; e = e->next)
+	for (e = app.head; e != NULL ; e = e->next)
 	{
-    // this is probably where we want to show their names as well
-		blit(e->texture, e->x, e->y, 1, .07);
+    // shows the person figure
+		blit(e->texture, e->x, e->y, e->name, 1, .07);
+
+		// // shows the name
+		// SDL_Surface* surfaceMessage = TTF_RenderText_Solid(HP, e->name, Black); // as TTF_RenderText_Solid could only be used on SDL_Surface then you have to create the surface first
+		//
+		// SDL_Texture* Message = SDL_CreateTextureFromSurface(app.renderer, surfaceMessage); //now you can convert it into a texture
+		//
+		// SDL_Rect Message_rect; //create a rect
+		// Message_rect.x = e->x;  //controls the rect's x coordinate
+		// Message_rect.y = e->y; // controls the rect's y coordinte
+		// Message_rect.w = 100; // controls the width of the rect
+		// Message_rect.h = 100; // controls the height of the rect
+		//
+		// //Mind you that (0,0) is on the top left of the window/screen, think a rect as the text's box, that way it would be very simple to understance
+		//
+		// //Now since it's a texture, you have to put RenderCopy in your game loop area, the area where the whole code executes
+		//
+		// SDL_RenderCopy(app.renderer, Message, NULL, &Message_rect); //you put the renderer's name first, the Message, the crop size(you can ignore this if you don't want to dabble with cropping), and the rect which is the size and coordinate of your texture
+		//
+		// //Don't forget too free your surface and texture
 	}
 }
