@@ -22,6 +22,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "SDL2/SDL_image.h"
 
-extern void blit(SDL_Texture *texture, int x, int y, int center, double scale);
+extern void blit(SDL_Texture *texture, int x, int y, char* name, int center, double scale);
 
 extern App app;

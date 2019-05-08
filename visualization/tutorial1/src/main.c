@@ -22,9 +22,15 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 int main(int argc, char *argv[])
 {
-	// initialize client thread
-
 	memset(&app, 0, sizeof(App));
+
+	// pthread_t clientThread;
+	// // create client thread
+	// run_client("127.0.0.1");
+	//
+	// while(app.start != 1){
+	//
+	// }
 
 	initSDL();
 
@@ -32,6 +38,7 @@ int main(int argc, char *argv[])
 	app.background.x = 0;
 	app.background.y = 0;
 	app.background.texture = loadTexture("graphics/wh1.png");
+	app.floor = 1;
 
 // initializing people (wrap in for loop later)
 
@@ -40,9 +47,9 @@ int main(int argc, char *argv[])
 // room #114 should be x = 860, y=1790
 // initialize the player, based on coordinate position.
 // initPlayer() is in entities.c
-	Entity *p1 = initPlayer(1370, 1280, NULL);
-	Entity *p2 = initPlayer(440, 170, p1);
-	Entity *p3 = initPlayer(860, 1790, p2);
+Entity *p1 = initPlayer(1370, 1280, "boi", 3);
+Entity *p2 = initPlayer(440, 170, "sup", 2);
+Entity *p3 = initPlayer(860, 1790, "hi", 1);
 
 	atexit(cleanup);
 
@@ -62,8 +69,8 @@ int main(int argc, char *argv[])
 		readClicks();
 
 		// adding background image to screen, comes right after prepare scene
-		blit(app.background.texture, app.background.x, app.background.y, 0, 1);
-		drawEntities(p3);
+		blit(app.background.texture, app.background.x, app.background.y, NULL, 0, 1);
+		drawEntities();
 
 		// blits cursor and writes the scen. Anything blitted afterwards will not present
 		presentScene();

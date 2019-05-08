@@ -41,4 +41,7 @@ typedef struct {
 	SDL_Window *window;
 	Mouse mouse;
 	Entity background;
+	struct Entity *head; // keeps track of head of the players list
+	int start;
+	int floor; // keeps track of which floor you're on
 } App;
