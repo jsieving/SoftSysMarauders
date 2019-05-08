@@ -10,7 +10,7 @@ LDLIBS += `pkg-config --libs glib-2.0`
 
 LDFLAGS += `pkg-config --cflags glib-2.0`
 LDFLAGS += `pkg-config --libs glib-2.0`
-LDFLAGS += `sdl2-config --libs` -lSDL2_mixer -lSDL2_image -lSDL2_ttf -lm -pthread
+LDFLAGS += `sdl2-config --libs` -lSDL2_mixer -lSDL2_image -lSDL2_ttf -lm -pthread -lX11
 
 # linking the program.
 $(PROG): $(OBJS)

@@ -17,17 +17,22 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 */
-
+// for basic C functionality
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
 #include <math.h>
 #include <ctype.h>
 
+// for SDL running
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include <SDL2/SDL_ttf.h>
 #include <SDL2/SDL_mixer.h>
+
+// for threading
+#include <X11/Xlib.h>
+#include <pthread.h>
 
 #include "defs.h"
 #include "structs.h"

@@ -22,17 +22,26 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 int main(int argc, char *argv[])
 {
+	// XInitThreads();
+
 	memset(&app, 0, sizeof(App));
 
-	// pthread_t clientThread;
-	// // create client thread
-	// run_client("127.0.0.1");
-	//
-	// while(app.start != 1){
-	//
-	// }
+	pthread_t clientThread;
+
+	char* ip = "127.0.0.1";
+
+	// create client thread
+	int ret = pthread_create(&clientThread, NULL, run_client, (void *) ip);
+	if (ret) {
+	 printf("ERROR: Return Code from pthread_create() is %d\n", ret);
+	 exit(1);
+	}
+
+	// while(app.start != 1){}
 
 	initSDL();
+
+	puts("App started");
 
 	// initializing the background image
 	app.background.x = 0;
@@ -50,6 +59,8 @@ int main(int argc, char *argv[])
 Entity *p1 = initPlayer(1370, 1280, "boi", 3);
 Entity *p2 = initPlayer(440, 170, "sup", 2);
 Entity *p3 = initPlayer(860, 1790, "hi", 1);
+Entity *p4 = initPlayer(1000, 1500, "boo", 4);
+removePlayer("boi");
 
 	atexit(cleanup);
 

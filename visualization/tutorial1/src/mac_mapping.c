@@ -207,10 +207,13 @@ GHashTable* make_mapping(char* filename) {
      } else {
          printf("getcwd() error");
      }
-    filename = "MAC_rooms.txt";
+    filename = "graphics/MAC_rooms.txt";
+    printf("No filename provided. Default is %s\n", filename);
   }
+
+  err_buf = malloc(sizeof(GError*));
   // read the file contents and check that this was successful
-  gboolean res = g_file_get_contents(filename, &text, NULL, &err_buf);
+  gboolean res = g_file_get_contents(filename, &text, NULL, &err_buf); //&err_buf
   if (res == 0) {
     error("Error in make_mapping-> g_file_get_contents-> failed to read file");
   }
@@ -332,6 +335,5 @@ int create_message(char* username, Queue* queue, char* buffer, int buf_len) {
   int level = queue->last_level;
 
   int n = snprintf(buffer, buf_len, "%s %d %d %d\r\n", username, x, y, level);
-  // Entity *p1 = initPlayer(1370, 1280, "boi", 3);
   return n;
 }

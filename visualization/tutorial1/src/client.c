@@ -30,53 +30,6 @@ void * receiveMessage(void * socket) {
  }
 }
 
-void * sendMessage(void * socket) {
-  puts("Hello from sender!");
-  int username_flag = 0; // 0: username not set
-  sock = (int) socket;
-  char buffer[BUF_SIZE] = {0}; // used to read in username
-  char username[BUF_SIZE]; // used to store username
-  char message_buffer[BUF_SIZE] = {0}; // used to store outgoing message
-
-  if(!username_flag){
-    printf("Marauders' Map v1.0\n");
-    fgets(buffer, BUF_SIZE, stdin);
-    int length = strlen(buffer);
-    strncpy(username, buffer, length-1);
-    username[length+1] = '\0';
-    sprintf(message_buffer, "New user joined: %s\n", username);
-    int ret = send(sock, message_buffer, BUF_SIZE, 0);
-    if(ret < 0) {
-      printf("Error sending data");
-    }
-    username_flag = 1;
-    // tell the app to running
-    app.start = 1;
-  }
-
-  char* filename = "MAC_rooms.txt";
-  // key: mac address (char*)
-  // value: Room *
-  GHashTable* room_lookup = make_mapping(filename);
-  Queue* loc_log = make_queue(20); // max size is 20
-
-  while(1) {
-      memset(message_buffer, 0, BUF_SIZE);
-      Record* last_loc = location(room_lookup);
-      enqueue(last_loc, loc_log);
-      // The string of x, y, floor is stored in message_buffer
-      create_message(username, loc_log, message_buffer, BUF_SIZE); // calculate average loc from queue and send it
-      int ret = send(sock, message_buffer, BUF_SIZE, 0);
-      if(ret < 0) {
-        printf("Error sending data");
-        exit(1);
-      }
-      // parse message and update list of user locations
-      sleep(5);
-  }
-  pthread_exit(NULL);
-}
-
 /* Set up the signal catcher.
 */
 int catch_signal(int sig, void (*handler)(int)) {
@@ -97,19 +50,17 @@ void handle_shutdown(int sig) {
 }
 
 // run_client
-int run_client(char* ip) // char* ip
+void* run_client(void* ip) // char* ip
 {
     struct sockaddr_in serv_addr;
     char * serverAddr;
     pthread_t recvThread;
-    pthread_t sendThread;
-
 
     if (catch_signal(SIGINT, handle_shutdown) == -1) {
         error("Signal catcher setup failed. Setting interrupt handler"); }
 
     if (ip != NULL) { //checks that user input server ip address
-      serverAddr = ip; //to get server ip address from command line
+      serverAddr = (char*) ip; //to get server ip address from command line
     } else {
       serverAddr = "127.0.0.1";
       printf("Server ip address not specified. Set to %s.\n", serverAddr);
@@ -117,8 +68,7 @@ int run_client(char* ip) // char* ip
 
     if ((sock = socket(AF_INET, SOCK_STREAM, 0)) < 0)
     {
-        printf("\n Socket creation error \n");
-        return -1;
+        error("Socket creation error");
     }
 
     memset(&serv_addr, '0', sizeof(serv_addr));
@@ -130,14 +80,12 @@ int run_client(char* ip) // char* ip
     // Convert IPv4 and IPv6 addresses from text to binary form
     if(inet_pton(AF_INET, serverAddr, &serv_addr.sin_addr)<=0)
     {
-        printf("\nInvalid address/ Address not supported \n");
-        return -1;
+        error("Invalid address/ Address not supported");
     }
 
     if (connect(sock, (struct sockaddr *)&serv_addr, sizeof(serv_addr)) < 0)
     {
-        printf("\nConnection Failed \n");
-        return -1;
+        error("Connection Failed");
     }
 
     //creating a new thread for receiving messages from the server
@@ -148,14 +96,50 @@ int run_client(char* ip) // char* ip
      exit(1);
     }
 
-    // make another thread to create & post location messages
-    ret = pthread_create(&sendThread, NULL, sendMessage, (void *) sock);
-    if (ret) {
-     printf("ERROR: Return Code from pthread_create() is %d\n", ret);
-     exit(1);
+    int username_flag = 0; // 0: username not set
+    // sock = (int) socket;
+    char buffer[BUF_SIZE] = {0}; // used to read in username
+    char username[BUF_SIZE]; // used to store username
+    char message_buffer[BUF_SIZE] = {0}; // used to store outgoing message
+
+    if(!username_flag){
+      printf("Marauders' Map v1.0\n");
+      fgets(buffer, BUF_SIZE, stdin);
+      int length = strlen(buffer);
+      strncpy(username, buffer, length-1);
+      username[length+1] = '\0';
+      sprintf(message_buffer, "New user joined: %s\n", username);
+      int ret = send(sock, message_buffer, BUF_SIZE, 0);
+      if(ret < 0) {
+        printf("Error sending data");
+      }
+      username_flag = 1;
+      // tell the app to running
+      app.start = 1;
     }
 
+    char* filename = "graphics/MAC_rooms.txt";
+    // key: mac address (char*)
+    // value: Room *
+    GHashTable* room_lookup = make_mapping(filename);
+    Queue* loc_log = make_queue(20); // max size is 20
+    Record* last_loc;
 
-
-    return 0;
+    while(1) {
+        memset(message_buffer, 0, BUF_SIZE);
+        last_loc = location(room_lookup);
+        enqueue(last_loc, loc_log);
+        initPlayer(last_loc->x, last_loc->y, username, last_loc->level);
+        // The string of x, y, floor is stored in message_buffer
+        create_message(username, loc_log, message_buffer, BUF_SIZE); // calculate average loc from queue and send it
+        int ret = send(sock, message_buffer, BUF_SIZE, 0);
+        if(ret < 0) {
+          printf("Error sending data");
+          exit(1);
+        }
+        // parse message and update list of user locations
+        sleep(5);
+    }
+    pthread_exit(NULL);
+    return NULL;
 }
