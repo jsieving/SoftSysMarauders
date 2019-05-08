@@ -22,14 +22,15 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 int main(int argc, char *argv[])
 {
-	// create client thread
-	run_client("127.0.0.1");
-
-	while(app.start != 1){
-
-	}
-
 	memset(&app, 0, sizeof(App));
+
+	// pthread_t clientThread;
+	// // create client thread
+	// run_client("127.0.0.1");
+	//
+	// while(app.start != 1){
+	//
+	// }
 
 	initSDL();
 
@@ -37,6 +38,7 @@ int main(int argc, char *argv[])
 	app.background.x = 0;
 	app.background.y = 0;
 	app.background.texture = loadTexture("graphics/wh1.png");
+	app.floor = 1;
 
 // initializing people (wrap in for loop later)
 

@@ -54,6 +54,9 @@ void blit(SDL_Texture *texture, int x, int y, char* name, int center, double sca
 	}
 
 	TTF_Font* HP = TTF_OpenFont("graphics/hp.TTF", 100); //this opens a font style and sets a size
+	if(!HP) {
+    printf("TTF_OpenFont: %s\n", TTF_GetError());
+	}
 	SDL_Color Black = {0,0,0};  // this is the color in rgb format, maxing out all would give you the color white, and it will be your text's color
 
 	// name Code	// shows the name

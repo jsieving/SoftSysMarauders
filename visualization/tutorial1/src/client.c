@@ -1,16 +1,6 @@
 // Client side C/C++ program to demonstrate Socket programming
-#include <stdio.h>
-#include <sys/socket.h>
-#include <stdlib.h>
-#include <netinet/in.h>
-#include <pthread.h>
-#include <string.h>
-#include <unistd.h>
-#include <sys/types.h>
-#include <arpa/inet.h>
-#include <netdb.h>
-#include <signal.h>
-#include "mac_mapping.h"
+
+#include "client.h"
 
 #define PORT 8080
 #define BUF_SIZE 80
@@ -61,7 +51,7 @@ void * sendMessage(void * socket) {
     }
     username_flag = 1;
     // tell the app to running
-    // app.start = 1;
+    app.start = 1;
   }
 
   char* filename = "MAC_rooms.txt";

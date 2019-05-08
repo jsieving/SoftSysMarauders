@@ -4,8 +4,11 @@ This is code for drawing people(entities) to the screen
 
 #include "entities.h"
 
-Entity* initPlayer(int x, int y, char* name, int f)
-{
+Entity* initPlayer(int x, int y, char* name, int f){
+	/*
+	Initializes a new player entity, given x, y, name, and floor number
+	Appends the player to the beginning of the list, whose first pointer is stored in app.head
+	*/
 	Entity* player = malloc(sizeof(Entity));
 	// memset(&player, 0, sizeof(Entity));
 
@@ -18,11 +21,44 @@ Entity* initPlayer(int x, int y, char* name, int f)
 	player->name = n;
 	player->floor = f;
 
+	// initialize floor as the texture for the background
+	// char temp[17];
+	// snprintf(temp, 17, "graphics/wh%i.png", f);
+	// SDL_Texture* tex = loadTexture(temp);
+	// player->floor = tex;
+
 	//pushing new player to beginning of list
 	player->next = app.head;
 	app.head = player;
 	return player;
 }
+
+Entity* removePlayer(char* name) {
+	/*
+	Finds and removes a player entity by name.
+	Returns the removed Entity object.
+	*/
+    Entity * this = (Entity*) app.head;
+
+    // make sure the first node isn't the match
+    if(strcmp(this->name, name) == 0){
+			Entity* save = this;
+			app.head = this->next;
+      return this;
+    }
+    while(this->next != NULL){
+			Entity *next = this->next;
+      if(strcmp(next->name, name) == 0){
+        Entity *temp = next;
+        this->next = next->next;
+        // free(temp);
+        return temp;
+      }
+      this = this->next;
+    }
+    return 0;
+}
+
 
 void readClicks(void)
 {
@@ -36,15 +72,19 @@ void readClicks(void)
 		if( ( x > 90 ) && ( x < 220 ) && ( y > 237 ) && ( y < 300 ) ){
 			//change the background.texture to the floor that was clicked on
 			app.background.texture = loadTexture("graphics/wh1.png");
+			app.floor = 1;
 		}
 		if( (x > 90) && ( x < 220) && (y > 320) && (y < 400)){
 			app.background.texture = loadTexture("graphics/wh2.png");
+			app.floor = 2;
 		}
 		if( (x > 90) && ( x < 220) && (y > 420) && (y < 500)){
 			app.background.texture = loadTexture("graphics/wh3.png");
+			app.floor = 3;
 		}
 		if( (x > 90) && ( x < 220) && (y > 520) && (y < 600)){
 			app.background.texture = loadTexture("graphics/wh4.png");
+			app.floor = 4;
 		}
 
 		app.mouse.button[SDL_BUTTON_LEFT] = 0;
@@ -58,34 +98,14 @@ void doEntities(void) {
 
 void drawEntities() {
   // Draws all people using app to the screen
-	TTF_Font* HP = TTF_OpenFont("graphics/hp.TTF", 24); //this opens a font style and sets a size
-	SDL_Color Black = {0,0,0};  // this is the color in rgb format, maxing out all would give you the color white, and it will be your text's color
-
 	// Blit the person image
 	Entity *e;
 
 	for (e = app.head; e != NULL ; e = e->next)
 	{
-    // shows the person figure
-		blit(e->texture, e->x, e->y, e->name, 1, .07);
-
-		// // shows the name
-		// SDL_Surface* surfaceMessage = TTF_RenderText_Solid(HP, e->name, Black); // as TTF_RenderText_Solid could only be used on SDL_Surface then you have to create the surface first
-		//
-		// SDL_Texture* Message = SDL_CreateTextureFromSurface(app.renderer, surfaceMessage); //now you can convert it into a texture
-		//
-		// SDL_Rect Message_rect; //create a rect
-		// Message_rect.x = e->x;  //controls the rect's x coordinate
-		// Message_rect.y = e->y; // controls the rect's y coordinte
-		// Message_rect.w = 100; // controls the width of the rect
-		// Message_rect.h = 100; // controls the height of the rect
-		//
-		// //Mind you that (0,0) is on the top left of the window/screen, think a rect as the text's box, that way it would be very simple to understance
-		//
-		// //Now since it's a texture, you have to put RenderCopy in your game loop area, the area where the whole code executes
-		//
-		// SDL_RenderCopy(app.renderer, Message, NULL, &Message_rect); //you put the renderer's name first, the Message, the crop size(you can ignore this if you don't want to dabble with cropping), and the rect which is the size and coordinate of your texture
-		//
-		// //Don't forget too free your surface and texture
+    // show the person if you're on the floor that they're on
+		if(e->floor == app.floor){
+			blit(e->texture, e->x, e->y, e->name, 1, .07);
+		}
 	}
 }
