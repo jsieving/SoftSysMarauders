@@ -84,15 +84,13 @@ int main(int argc, char *argv[])
 
 // initializing people (wrap in for loop later)
 
-// room #120 should be x = 1370, y=1280
-// room #107 should be x = 440, y=170
-// room #114 should be x = 860, y=1790
 // initialize the player, based on coordinate position.
 // initPlayer() is in entities.c
 Entity *p1 = initPlayer(790, 1440, "Jane", 3);
 Entity *p2 = initPlayer(900, 950, "Allen", 2);
 Entity *p3 = initPlayer(1370, 1280, "Emma", 1);
 Entity *p4 = initPlayer(1460, 810, "Ashley", 4);
+
 // removePlayer("boi");
 
 	atexit(cleanup);
@@ -103,8 +101,6 @@ Entity *p4 = initPlayer(1460, 810, "Ashley", 4);
 	while (1)
 	{
 		prepareScene();
-
-		// App logic functions called here, before doInput()
 
 		// mouse logic goes here
 		doInput();

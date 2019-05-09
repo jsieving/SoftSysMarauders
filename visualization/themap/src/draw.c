@@ -72,7 +72,7 @@ void blit(SDL_Texture *texture, int x, int y, char* name, int center, double sca
 	dest.h = 40;
 	dest.w = 40;
 	if(name != NULL){
-		dest.w = (int)((strlen(name)) * 20);
+		dest.w = (int)((strlen(name)) * 18);
 		dest.x = x-dest.w/2;
 	}
 
