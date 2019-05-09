@@ -2,6 +2,9 @@ client: mac_mapping.h mac_mapping.c client.c
 	gcc mac_mapping.h mac_mapping.c client.c -Wall -pthread `pkg-config --cflags glib-2.0` `pkg-config --libs glib-2.0` -o client
 	gcc server.c -Wall -o server
 
+test: mac_mapping.h mac_mapping.c test.c
+	gcc mac_mapping.h mac_mapping.c test.c -Wall `pkg-config --cflags glib-2.0` `pkg-config --libs glib-2.0` -lglib-2.0 -o test1
+
 message_create_test: mac_mapping.h mac_mapping.c message_create_test.c
 	gcc mac_mapping.h mac_mapping.c message_create_test.c -Wall `pkg-config --cflags glib-2.0` `pkg-config --libs glib-2.0` -o message_create_test
 
