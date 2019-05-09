@@ -9,6 +9,8 @@ The goal of this project is to create a Marauder’s Map application. The progra
 
 ## Try it out
 
+Here's a link to a demo video: https://youtu.be/tULAqdishBw
+
 Go to the folder `MAC_mapping` and follow the instructions to test out our program.
 
 ## Learning Goals

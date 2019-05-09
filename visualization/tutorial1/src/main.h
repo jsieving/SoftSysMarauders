@@ -22,6 +22,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 // from client.c
 extern int run_client(void*);
+extern void handle_shutdown(int sig);
+int catch_signal(int sig, void (*handler)(int));
+int receiveMessage(void * socket);
 
 // from draw.c
 extern void blit(SDL_Texture *texture, int x, int y, char* name, int center, double scale);

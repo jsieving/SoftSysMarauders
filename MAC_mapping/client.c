@@ -34,6 +34,54 @@ void * receiveMessage(void * socket) {
    printf("Error receiving data!\n");
   } else {
    fputs(buffer, stdout);
+   
+    char words[4][32];
+    int word_ind = 0;
+    int char_ind = 0;
+    int buf_counter = 0;
+
+    while (buffer[buf_counter] != '\0') {
+      if (buffer[buf_counter] == ',') {
+        words[word_ind][char_ind] = '\0';
+        word_ind++;
+        char_ind = 0;
+      } else {
+        words[word_ind][char_ind] = buffer[buf_counter];
+        char_ind++;
+      }
+      buf_counter++;
+    }
+    // printf("%s -- %s -- %s -- %s\n", words[0], words[1], words[2], words[3]);
+
+    //iterates through linked list to find user to update
+    Entity* curr = (Entity*) app.head;
+    Entity *next;
+    Entity* found_usr;
+    int found_flag = 0;
+
+    // make sure the first node isn't the match
+    if(strcmp(curr->name, name) == 0){
+			found_usr = curr;
+      found_flag = 1;
+    }
+    while(curr->next != NULL){
+			next = curr->next;
+      if(strcmp(next->name, name) == 0){
+        found_usr = next;
+        found_flag = 1;
+      }
+      curr = curr->next;
+    }
+
+    //adds new users or modifies location of the existing user
+    if(found_flag == 0) {
+      Entity* initPlayer(atoi(words[1]), atoi(words[2]), words[0], atoi(words[3]));
+    } else {
+      found_usr->x = atoi(words[1]);
+      found_usr->y = atoi(words[2]);
+      found_usr->floor = atoi(words[3]);
+      printf("%s -- %d -- %d -- %d\n", words[0], found_usr->x, found_usr->y, found_usr->floor);
+    }
   }
  }
 }

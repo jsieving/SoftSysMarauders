@@ -24,6 +24,15 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <math.h>
 #include <ctype.h>
 
+// from client.h
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <unistd.h>
+#include <sys/types.h>
+#include <arpa/inet.h>
+#include <netdb.h>
+#include <signal.h>
+
 // for SDL running
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
@@ -33,6 +42,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 // for threading
 #include <X11/Xlib.h>
+#include <X11/Xutil.h>
 #include <pthread.h>
 
 #include "defs.h"
