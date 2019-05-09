@@ -1,5 +1,8 @@
 /*
-This is code for drawing people(entities) to the screen
+Includes code for initializing an entity when a new player joins, 
+removing and updating players,
+changing the background based on mouse clicks for different floors,
+and calling draw functions to show the relevant players on the screen.
 */
 
 #include "entities.h"
@@ -38,25 +41,25 @@ Entity* removePlayer(char* name) {
 	Finds and removes a player entity by name.
 	Returns the removed Entity object.
 	*/
-    Entity * this = (Entity*) app.head;
+  Entity * this = (Entity*) app.head;
 
-    // make sure the first node isn't the match
-    if(strcmp(this->name, name) == 0){
-			Entity* save = this;
-			app.head = this->next;
-      return this;
+  // make sure the first node isn't the match
+  if(strcmp(this->name, name) == 0){
+		Entity* save = this;
+		app.head = this->next;
+    return this;
+  }
+  while(this->next != NULL){
+		Entity *next = this->next;
+    if(strcmp(next->name, name) == 0){
+      Entity *temp = next;
+      this->next = next->next;
+      // free(temp);
+      return temp;
     }
-    while(this->next != NULL){
-			Entity *next = this->next;
-      if(strcmp(next->name, name) == 0){
-        Entity *temp = next;
-        this->next = next->next;
-        // free(temp);
-        return temp;
-      }
-      this = this->next;
-    }
-    return 0;
+    this = this->next;
+  }
+  return 0;
 }
 
 
@@ -91,10 +94,6 @@ void readClicks(void)
 	}
 
 }
-
-void doEntities(void) {
-}
-
 
 void drawEntities() {
   // Draws all people using app to the screen

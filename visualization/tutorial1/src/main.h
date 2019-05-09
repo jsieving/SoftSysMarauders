@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "common.h"
 
 // from client.c
-extern int run_client(char* ip);
+extern int run_client(void*);
 
 // from draw.c
 extern void blit(SDL_Texture *texture, int x, int y, char* name, int center, double scale);
@@ -33,6 +33,7 @@ extern void initSDL(void);
 
 // from entities.c
 extern Entity* initPlayer(int x, int y, char* name, int floor);
+extern Entity* removePlayer(char* name);
 extern void drawEntities();
 
 extern void prepareScene(void);

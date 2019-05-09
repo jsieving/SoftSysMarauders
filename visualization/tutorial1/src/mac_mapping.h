@@ -8,8 +8,6 @@
 #include <glib.h>
 #include <glib/gstdio.h>
 
-#include "common.h"
-
 extern int ERRORS_ON;
 
 // a room and its location.
@@ -76,9 +74,3 @@ int get_near_rooms(GHashTable* room_lookup, Room** room_array, int* strength_arr
 Record* location(GHashTable* room_lookup);
 
 int create_message(char* username, Queue* queue, char* buffer, int buf_len);
-
-// from visualization
-
-// extern Entity* initPlayer(int x, int y, char* name, int floor);
-
-// App app;

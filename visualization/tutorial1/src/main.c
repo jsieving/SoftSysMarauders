@@ -1,38 +1,33 @@
 /*
-Copyright (C) 2015-2018 Parallel Realities
-
-This program is free software; you can redistribute it and/or
-modify it under the terms of the GNU General Public License
-as published by the Free Software Foundation; either version 2
-of the License, or (at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-
-See the GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
-
+Runs the program. Creates a client thread, calls the initialization functions, and then calls the functions that run the app in a while loop.
 */
 
 #include "main.h"
 
 int main(int argc, char *argv[])
 {
+	initSDL();
 	memset(&app, 0, sizeof(App));
 
-	// pthread_t clientThread;
-	// // create client thread
-	// run_client("127.0.0.1");
-	//
-	// while(app.start != 1){
-	//
-	// }
+	XInitThreads();
+	int ret;
 
-	initSDL();
+
+// create client thread
+	char* ip = "127.0.0.1";
+	app.thread = SDL_CreateThread( (SDL_ThreadFunction) run_client, "client_thread", (void *) ip);
+
+	if (NULL == app.thread) {
+		printf("SDL_CreateThread failed: %s\n", SDL_GetError());
+	}
+	else {
+			SDL_WaitThread(app.thread, &ret);
+			printf("Thread returned value: %d\n", ret);
+	}
+
+	// while(app.start != 1){}
+
+	puts("App started");
 
 	// initializing the background image
 	app.background.x = 0;
@@ -50,6 +45,8 @@ int main(int argc, char *argv[])
 Entity *p1 = initPlayer(1370, 1280, "boi", 3);
 Entity *p2 = initPlayer(440, 170, "sup", 2);
 Entity *p3 = initPlayer(860, 1790, "hi", 1);
+Entity *p4 = initPlayer(1000, 1500, "boo", 4);
+removePlayer("boi");
 
 	atexit(cleanup);
 
