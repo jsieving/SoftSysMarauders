@@ -1,7 +1,7 @@
 ## To run: 
 
-cd into visualization/themap <br>
-Type: <br>
+Type:<br>
+`cd visualization/themap` <br>
 `./test_sdl`
 <br>
 
