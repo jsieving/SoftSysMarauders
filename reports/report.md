@@ -27,7 +27,7 @@ Here's a diagram of the client-server protocol:
 
 ### Location from Wifi Routers
 
-We created a script that gathers the MAC addresses of the strongest wifi routers in the vicinity, along with their respective strengths. This script creates a fork that uses system() to call `nmcli`, which outputs the addresses and strengths.
+We created a script that gathers the MAC addresses of the strongest Wi-Fi routers in the vicinity, along with their respective strengths. This script creates a fork that uses system() to call `nmcli`, which outputs the addresses and strengths.
 
 `system("nmcli -f BSSID,SIGNAL -t -e no dev wifi")`
 
@@ -57,9 +57,9 @@ The map is an image of a floor plan of West Hall at Olin College. There are butt
 
 ![](https://github.com/jsieving/SoftSysMarauders/blob/master/screencap_map.png)
 
-To visualize our Marauder’s Map, we decided to implement our own UI, in order to learn more about graphics in C. We looked into the C visualization frameworks OpenGL, Kore, SDL2, and CSFML, and settled on SDL2. We chose this development library because it is similar to pygame, a library that we are familiar with, it was simpler than OpenGL and Kore, and had the most documentation in C. The link to the tutorial we learned from can be found [here](https://www.parallelrealities.co.uk/tutorials/#ppp). <br>
+To visualize our Marauder’s Map, we decided to implement our own UI, in order to learn more about graphics in C. We looked into the C visualization frameworks OpenGL, Kore, SDL2, and CSFML, and settled on SDL2. We chose this development library because it is similar to Pygame, a library that we are familiar with, it was simpler than OpenGL and Kore, and had the most documentation in C. The link to the tutorial we learned from can be found [here](https://www.parallelrealities.co.uk/tutorials/#ppp). <br>
 
-When creating the visualization framework, we followed a similar organization structure to the tutorials, and simplified it greatly to fit our needs and make it easier to read. We split the code into different files based on functionality, gave each its own header file to keep track of dependencies, and imported a “common.h” header file to all of them, to store the essential imports and header files. Two other essential header files were “defs.h”, which defined the global variables, and “structs.h”, which defined all the structs we created for our visualization program. The app is stored in one shared struct called “App”, and each player’s information is stored in an “Entity” struct, which are all stored in a linked list. The head of the linked list is stored in the “App” struct. This architecture allows us to update the shared entities and app from different code files, quickly find the functions we’re looking for, and isolate where visualization-related errors are coming from. <br>
+When creating the visualization framework, we followed a similar organization structure to the tutorials, and simplified it greatly to fit our needs and make it easier to read. We split the code into different files based on functionality, gave each its own header file to keep track of dependencies, and imported a `common.h` header file to all of them, to store the essential imports and header files. Two other essential header files were `defs.h`, which defined the global variables, and `structs.h`, which defined all the structs we created for our visualization program. The `app` is stored in one shared struct called `App`, and each player’s information is stored in an `Entity` struct, which are all stored in a linked list. The head of the linked list is stored in the `App` struct. This architecture allows us to update the shared entities and app from different code files, quickly find the functions we’re looking for, and isolate where visualization-related errors are coming from. <br>
 
 There is a lot of code supporting the visualization, so here is a list describing the most important files and their functionalities:
 
@@ -71,7 +71,7 @@ There is a lot of code supporting the visualization, so here is a list describin
 
 `entities.c`: Includes code for initializing an entity when a new player joins, removing and updating players, changing the background based on mouse clicks for different floors, and calling draw functions to show the relevant players on the screen.
 
-`main.c`: Runs the program. Creates a client thread, calls the initialization functions, and then calls the functions that run the app in a while loop.
+`main.c`: Runs the program. Creates a client thread, calls the initialization functions, and then calls the functions that run the GUI in a while loop.
 
 ## Current State
 
@@ -79,16 +79,16 @@ We achieved the basic functionality of multi-client location reporting early on 
 
 As you can see, we also created a beautiful visualizer with the ability to render multiple users and switch between floors. We got successful demos of the visualizer for 2 cases: hard-coded users, and one user calculating and rendering its own location.
 
-However, when trying to integrate the visualizer with the multi-threaded client code, we ran into issues involving how SDL handles threads. Aside from having to refactor parts of our code to use SDL's threading protocol, we ran into an issue which is internal to XLib (a dependency of SDL) which takes a variable amount of time to cause a segfault (in our experience, a few seconds). Despite doing a lot of research and trying a lot of things to fix the bug, we were not able to troubleshoot it in the time available. Therefore, we are currently not able to visualize data based on communication between the clients and server; we can only render data that is locally available. We're still very satistfied with all that we learned and got working. <br>
+However, when trying to integrate the visualizer with the multi-threaded client code, we ran into issues involving how SDL2 handles threads. Aside from having to re-factor parts of our code to use SDL2's threading protocol, we ran into an issue which is internal to Xlib (a dependency of SDL2) which takes a variable amount of time to cause a segfault (in our experience, a few seconds). Despite doing a lot of research and trying a lot of things to fix the bug, we were not able to troubleshoot it in the time available. Therefore, we are currently not able to visualize data based on communication between the clients and server; we can only render data that is locally available. We're still very satisfied with all that we learned and got working. <br>
 
 
 ## What we Learned
 
 Over the course of this project, we have learned about networks, threading, forking, piping, system calls, header files, system architecture, manipulating strings in C, working with large, complex C libraries, graphics, debugging segmentation faults, and writing tolerable technical reports. <br>
 
-Our use of threads and forks in the client and the select() function in the server reinforced our understanding of how to use these tools and challenged us to think critically about which was the right tool for handling multiple tasks or activities. Accordingly, we learned methods for sharing data across threads and forks and how the implementations differs. Additionally, the number of moving parts involved in our entire program afforded us the opportunity to learn about system architecture in a project with multiple types of functionality and multithreading.
+Our use of threads and forks in the client and the select() function in the server reinforced our understanding of how to use these tools and challenged us to think critically about which was the right tool for handling multiple tasks or activities. Accordingly, we learned methods for sharing data across threads and forks and how the implementations differs. Additionally, the number of moving parts involved in our entire program afforded us the opportunity to learn about system architecture in a project with multiple types of functionality and multi-threading.
 
-The project also allowed our team to learn how to approach a large project where we knew very little about the subject at the start. We researched, sought guidance, and experimented throughout the process, taking on new tasks one at a time. For the especially daunting holes in our knowledge (such as wifi routers in general), we learned to start early and Google lots.
+The project also allowed our team to learn how to approach a large project where we knew very little about the subject at the start. We researched, sought guidance, and experimented throughout the process, taking on new tasks one at a time. For the especially daunting holes in our knowledge (such as Wi-Fi routers in general), we learned to start early and Google lots.
 
 
 ## Resources Used
