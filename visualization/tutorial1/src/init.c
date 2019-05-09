@@ -15,6 +15,8 @@ void initSDL(void)
 
 	windowFlags = 0;
 
+	// XInitThreads();
+
 	if (SDL_Init(SDL_INIT_VIDEO) < 0)
 	{
 		printf("Couldn't initialize SDL: %s\n", SDL_GetError());

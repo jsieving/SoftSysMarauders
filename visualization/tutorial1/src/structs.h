@@ -44,6 +44,7 @@ typedef struct {
 	struct Entity *head; // keeps track of head of the players list
 	int floor; // keeps track of which floor you're on
 	int start;
+	int sock; // used by sending (parent) thread
 	//Quit flag
 	int quit; // 0 is false, 1 is true
 	SDL_Thread *thread;

@@ -28,4 +28,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #define MAX_NAME_LENGTH        32
 
+// client defs
+#define PORT 8080
+#define BUF_SIZE 80
+
 //hardcode or provide the IP address of host
