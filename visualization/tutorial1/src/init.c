@@ -54,24 +54,10 @@ void initCursor(void)
 	app.mouse.texture = loadTexture("graphics/wand.png");
 }
 
-int my_thread( void *data ) {
-	//While the program is not over
-	while( quit == false ) {
-		//Do the caption animation
-		SDL_WM_SetCaption( "Thread is running", NULL );
-		SDL_Delay( 250 );
-		SDL_WM_SetCaption( "Thread is running.", NULL );
-		SDL_Delay( 250 );
-		SDL_WM_SetCaption( "Thread is running..", NULL );
-		SDL_Delay( 250 );
-		SDL_WM_SetCaption( "Thread is running...", NULL );
-		SDL_Delay( 250 ); } return 0;
-	}
-
 void cleanup(void)
 {
 	//Stop the thread
-	SDL_KillThread(app.thread );
+	// SDL_KillThread(app.thread);
 
 	SDL_DestroyRenderer(app.renderer);
 

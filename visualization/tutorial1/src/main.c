@@ -9,18 +9,20 @@ int main(int argc, char *argv[])
 	initSDL();
 	memset(&app, 0, sizeof(App));
 
-	app.thread = SDL_CreateThread( my_thread, run_client, (void *) ip);
-	// XInitThreads();
+	XInitThreads();
+	int ret;
 
-	pthread_t clientThread;
 
+// create client thread
 	char* ip = "127.0.0.1";
+	app.thread = SDL_CreateThread( (SDL_ThreadFunction) run_client, "client_thread", (void *) ip);
 
-	// create client thread
-	int ret = pthread_create(&clientThread, NULL, run_client, (void *) ip);
-	if (ret) {
-	 printf("ERROR: Return Code from pthread_create() is %d\n", ret);
-	 exit(1);
+	if (NULL == app.thread) {
+		printf("SDL_CreateThread failed: %s\n", SDL_GetError());
+	}
+	else {
+			SDL_WaitThread(app.thread, &ret);
+			printf("Thread returned value: %d\n", ret);
 	}
 
 	// while(app.start != 1){}

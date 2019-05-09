@@ -50,7 +50,7 @@ void handle_shutdown(int sig) {
 }
 
 // run_client
-void* run_client(void* ip) // char* ip
+int run_client(void* ip) // char* ip
 {
     struct sockaddr_in serv_addr;
     char * serverAddr;

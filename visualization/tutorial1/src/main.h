@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "common.h"
 
 // from client.c
-extern void* run_client(void*);
+extern int run_client(void*);
 
 // from draw.c
 extern void blit(SDL_Texture *texture, int x, int y, char* name, int center, double scale);

@@ -42,9 +42,9 @@ typedef struct {
 	Mouse mouse;
 	Entity background;
 	struct Entity *head; // keeps track of head of the players list
-	int start;
 	int floor; // keeps track of which floor you're on
+	int start;
 	//Quit flag
-	bool quit = false;
+	int quit; // 0 is false, 1 is true
 	SDL_Thread *thread;
 } App;
