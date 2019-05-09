@@ -1,6 +1,5 @@
 ## To run: 
 
 cd into tutorial1 <br>
-type: <br>
-`make` <br>
+Type: <br>
 `./test_sdl`
