@@ -1,11 +1,11 @@
 ## To run: 
 
-cd into visualization/tutorial1 <br>
+cd into visualization/themap <br>
 Type: <br>
 `./test_sdl`
 <br>
 
-Main Files: In visualization/tutorial1/src
+Main Files: In visualization/themap/src
 
 `init.c`: Initializes the framework and necessary components, then creates and opens a window. This also includes cleanup functions for ending the program.
 
