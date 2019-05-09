@@ -15,18 +15,34 @@ void * receiveMessage(void * socket) {
   char buffer[BUF_SIZE]; // holds the message received by client
   sockfd = (int) socket;
   for (;;) {
-  memset(buffer, 0, BUF_SIZE);
-  ret = recv(sockfd , buffer, BUF_SIZE,0);
-  if(ret == 0){ //ret = 0
-    printf("Server not available! Please Ctrl-D");
-    pthread_exit(NULL);
-    exit(0);
-  }
-  else if (ret < 0) {
-   printf("Error receiving data!\n");
-  } else {
-   fputs(buffer, stdout);
-  }
+      memset(buffer, 0, BUF_SIZE);
+      ret = recv(sockfd , buffer, BUF_SIZE,0);
+      if(ret == 0){ //ret = 0
+        printf("Server not available! Please Ctrl-D");
+        pthread_exit(NULL);
+        exit(0);
+      }
+      else if (ret < 0) {
+        printf("Error receiving data!\n");
+      } else {
+        char words[4][32];
+        int word_ind = 0;
+        int char_ind = 0;
+        int buf_counter = 0;
+
+        while (buffer[buf_counter] != '\0') {
+          if (buffer[buf_counter] == ',') {
+            words[word_ind][char_ind] = '\0';
+            word_ind++;
+            char_ind = 0;
+          } else {
+            words[word_ind][char_ind] = buffer[buf_counter];
+            char_ind++;
+          }
+          buf_counter++;
+        }
+        printf("%s -- %s -- %s -- %s\n", words[0], words[1], words[2], words[3]);
+      }
  }
 }
 
