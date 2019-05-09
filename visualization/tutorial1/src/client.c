@@ -80,12 +80,14 @@ void* run_client(void* ip) // char* ip
     // Convert IPv4 and IPv6 addresses from text to binary form
     if(inet_pton(AF_INET, serverAddr, &serv_addr.sin_addr)<=0)
     {
-        error("Invalid address/ Address not supported");
+        printf("\nInvalid address/ Address not supported \n");
+        return -1;
     }
 
     if (connect(sock, (struct sockaddr *)&serv_addr, sizeof(serv_addr)) < 0)
     {
-        error("Connection Failed");
+        printf("\nConnection Failed \n");
+        return -1;
     }
 
     //creating a new thread for receiving messages from the server
@@ -141,5 +143,5 @@ void* run_client(void* ip) // char* ip
         sleep(5);
     }
     pthread_exit(NULL);
-    return NULL;
+    return 0;
 }

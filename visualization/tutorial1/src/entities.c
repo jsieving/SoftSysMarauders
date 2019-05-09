@@ -1,5 +1,8 @@
 /*
-This is code for drawing people(entities) to the screen
+Includes code for initializing an entity when a new player joins, 
+removing and updating players,
+changing the background based on mouse clicks for different floors,
+and calling draw functions to show the relevant players on the screen.
 */
 
 #include "entities.h"
